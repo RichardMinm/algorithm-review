@@ -1,22 +1,29 @@
 # 算法设计与分析 · 刷题复习站
 
-静态站点，适用于 Gitee Pages。
+静态站点，托管于 GitHub Pages。
 
-## 访问地址（部署后）
+## 在线访问
 
-`https://<你的Gitee用户名>.gitee.io/algorithm-review/`
+https://richardminm.github.io/algorithm-review/
 
-## Gitee Pages 开启步骤
+## 开启 GitHub Pages（首次）
 
-1. 将本仓库推送到 Gitee（见下方命令）
-2. 打开仓库 → **服务** → **Gitee Pages**
-3. 分支选择 `master` 或 `main`，目录选 **/（根目录）**
-4. 点击 **启动** / **更新**
-5. 等待 1～3 分钟，访问上方 Pages 地址
+1. 打开仓库 [Settings → Pages](https://github.com/RichardMinm/algorithm-review/settings/pages)
+2. **Build and deployment** → Source 选 **Deploy from a branch**
+3. Branch 选 `main`，Folder 选 **/ (root)**
+4. 点击 **Save**，等待 1～3 分钟
 
 ## 本地预览
 
 ```bash
 python3 -m http.server 8080
 # 浏览器打开 http://localhost:8080
+```
+
+## 更新部署
+
+```bash
+git add .
+git commit -m "更新内容"
+git push
 ```
