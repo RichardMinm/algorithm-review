@@ -1119,34 +1119,25 @@ body.dark .code-block {
 .code-num { color: #ffa657; }
 .code-blank {
   display: inline-block;
-  min-width: 4.5ch;
-  vertical-align: baseline;
-  position: relative;
+  min-width: 5ch;
+  height: 1em;
+  vertical-align: -0.05em;
+  border-bottom: 1px solid #8b949e;
+  margin: 0 2px;
 }
-.code-blank::after {
-  content: "____";
-  color: #7d8590;
-  letter-spacing: 0.06em;
-  font-weight: 400;
-}
-.code-blank.wide { min-width: 8ch; }
-.code-blank.wide::after { content: "________"; }
+.code-blank::after { content: none; }
+.code-blank.wide { min-width: 10ch; }
 .code-blank-line {
   display: inline-block;
   min-width: 10ch;
-  min-height: 1em;
-  vertical-align: baseline;
-  position: relative;
+  height: 1em;
+  vertical-align: -0.05em;
+  border-bottom: 1px solid #8b949e;
+  margin: 0 2px;
 }
-.code-blank-line::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 62%;
-  width: 100%;
-  max-width: 12ch;
-  border-bottom: 1px dashed #6e7681;
-}
+.code-blank-line.wide { min-width: 14ch; }
+.code-blank-line::after { content: none; }
+
 .fill-hint { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
 .fill-area.active { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 18px; }
 .fill-area.active .fill-hint { grid-column: 1 / -1; }
@@ -3324,7 +3315,7 @@ window.QUESTION_BANK = {
       "section": "填空题",
       "number": 9,
       "title": "冒泡排序代码填空",
-      "prompt": "9.冒泡排序补全下列程序\nvoid BubbleSort(int a[], int n) {\n  for (int i = 0; i < n - 1; i++) {\n    for (int j = 0; j < n - 1 - i; j++) {\n      if (a[j] > a[j+1]) {\n        int temp = a[j];\n        ;\n        ;\n      }\n    }\n  }\n}",
+      "prompt": "9.冒泡排序补全下列程序\nvoid BubbleSort(int a[], int n) {\n  for (int i = 0; i < n - 1; i++) {\n    for (int j = 0; j < n - 1 - i; j++) {\n      if (a[j] > a[j+1]) {\n        int temp = a[j];\n        ________________;\n        ________________;\n      }\n    }\n  }\n}",
       "answer": "a[j] = a[j+1]；a[j+1] = temp",
       "analysis": "交换相邻逆序元素：先赋值后移，再把 temp 赋给 a[j+1]。"
     },
@@ -3524,7 +3515,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 1,
       "title": "1. 背包问题的贪心算法",
-      "prompt": "1.背包问题的贪心算法\nvoid Knapsack(int n,float M,float v[],float w[],float x[]){\n  sort(n,v,w);\n  int i;\n  for (i=1;i<=n;i++) x[i]=0;\n  float c=M;\n  for (i=1;i<=n;i++) {\n    if (w[i]>c) break;\n    x[i]=1;\n      ;\n  }\n             ;\n}",
+      "prompt": "1.背包问题的贪心算法\nvoid Knapsack(int n,float M,float v[],float w[],float x[]){\n  sort(n,v,w);\n  int i;\n  for (i=1;i<=n;i++) x[i]=0;\n  float c=M;\n  for (i=1;i<=n;i++) {\n    if (w[i]>c) break;\n    x[i]=1;\n    ________________;\n  }\n  ________________;\n}",
       "answer": "c -= w[i]；if (i <= n) x[i] = c / w[i]",
       "analysis": "先按单位价值排序，能整件装就装，最后一件只能装剩余比例。这是分数背包，不是 0/1 背包。"
     },
@@ -3534,7 +3525,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 2,
       "title": "2. 最大子段和动态规划",
-      "prompt": "2.最大子段和: 动态规划算法\nint MaxSum(int n, int a[]){\n    int sum=0, b=0； //sum存储当前最大的b[j], b存储b[j]\n    for(int j=1； j<=n； j++) {\n if (b>0) b+= a[j] ；\n          //一旦某个区段和为负，则从下一个位置累和\n if(b>sum)\n   }\n   return sum；\n}",
+      "prompt": "2.最大子段和: 动态规划算法\nint MaxSum(int n, int a[]){\n    int sum=0, b=0; //sum存储当前最大的b[j], b存储b[j]\n    for(int j=1; j<=n; j++) {\n        if (b>0) b+= a[j];\n        else ________________;\n        if(b>sum) ________________;\n    }\n    return sum;\n}",
       "answer": "else b=a[j]；sum=b",
       "analysis": "完整写法：if(b>0) b+=a[j]; else b=a[j]; if(b>sum) sum=b。b 表示以 a[j] 结尾的最大子段和。"
     },
@@ -3544,7 +3535,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 3,
       "title": "3. 快速排序",
-      "prompt": "3.快速排序\ntemplate<class Type>\nvoid QuickSort (Type a[], int p, int r){\n   if (p<r) {\n    int q=Partition(a,p,r);\n                //对左半段排序\n                //对右半段排序\n   }\n}",
+      "prompt": "3.快速排序\ntemplate<class Type>\nvoid QuickSort (Type a[], int p, int r){\n   if (p<r) {\n    int q=Partition(a,p,r);\n    ________________; //对左半段排序\n    ________________; //对右半段排序\n   }\n}",
       "answer": "QuickSort(a, p, q-1)；QuickSort(a, q+1, r)",
       "analysis": "Partition 后基准在 q，左右分别递归排序。"
     },
@@ -3554,7 +3545,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 4,
       "title": "4. 排列问题",
-      "prompt": "4.排列问题\nTemplate <class Type>\nvoid perm(Type list[], int k, int m ){ //产生[list[k:m]的所有排列\n           { //只剩下一个元素\n    for (int i=0;i<=m;i++) cout<<list[i];\n    cout<<endl;\n  }\n  else //还有多个元素待排列，递归产生排列\n    for (          ){\n   swap(list[k]，list[i]);\n\n        swap(list[k],list[i]);\n    }\n}",
+      "prompt": "4.排列问题\nTemplate <class Type>\nvoid perm(Type list[], int k, int m ){ //产生[list[k:m]的所有排列\n  if (________________) { //只剩下一个元素\n    for (int i=0;i<=m;i++) cout<<list[i];\n    cout<<endl;\n  }\n  else //还有多个元素待排列，递归产生排列\n    for (________________){\n      swap(list[k], list[i]);\n      perm(list, k+1, m);\n      swap(list[k], list[i]);\n    }\n}",
       "answer": "if(k==m)；for(int i=k,i<=m,i++)",
       "analysis": "if(k==m) 输出排列；else for(i=k;i<=m;i++) { swap; perm(k+1); swap back; }"
     },
@@ -3564,7 +3555,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 5,
       "title": "5. 二分搜索",
-      "prompt": "5.给定已按升序排好序的n个元素a[0:n-1]，现要在这n个元素中找出一特定元素x。\n据此容易设计出二分搜索算法：\ntemplate<class Type>\nint BinarySearch(Type a[], const Type& x, int l, int r){\n  while ( l<r  ){\n    int m =  (l+r)/2        ;\n    if (x == a[m]) return m;\n    if (  x<a[m]  ) r = m-1;\n    else l = m+1;\n  }\n  return -1;\n}",
+      "prompt": "5.给定已按升序排好序的n个元素a[0:n-1]，现要在这n个元素中找出一特定元素x。\n据此容易设计出二分搜索算法：\ntemplate<class Type>\nint BinarySearch(Type a[], const Type& x, int l, int r){\n  while (________________){\n    int m = ________________;\n    if (x == a[m]) return m;\n    if (x<a[m]) r = m-1;\n    else l = m+1;\n  }\n  return -1;\n}",
       "answer": "while(l<=r)；m=(l+r)/2",
       "analysis": "标准写法用 while(l<=r) 避免漏查；每次取中点比较后缩小区间，复杂度 O(log n)。"
     },
@@ -3574,7 +3565,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 6,
       "title": "6. 合并排序",
-      "prompt": "6、合并排序描述如下：\ntemplate<class Type>\nvoid Mergesort(Type a[ ], int left, int right){\n  if (        ){\n    int i=(          )/2;\n    Mergesort(a, left, i );\n    Mergesort(           );\n    Merge(a,b, left,i,right);//合并到数组b\n    Copy(a,b, left,right ); //复制到数组a\n  }\n}",
+      "prompt": "6、合并排序描述如下：\ntemplate<class Type>\nvoid Mergesort(Type a[ ], int left, int right){\n  if (________________){\n    int i=(________________)/2;\n    Mergesort(a, left, i );\n    Mergesort(________________);\n    Merge(a,b, left,i,right);//合并到数组b\n    Copy(a,b, left,right ); //复制到数组a\n  }\n}",
       "answer": "left < right；left + right；a, i+1, right",
       "analysis": "分成左右两半递归排序，再 Merge 合并，复杂度 O(nlogn)。"
     },
@@ -3584,7 +3575,7 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 7,
       "title": "7. 计算 x^m",
-      "prompt": "7、以下是计算xm的值的过程\nint power ( x, m ){//计算xm的值并返回。\n   y=(     ); i=m;\n   while(i-->0)\n     y=y*x;\n    (          )\n}",
+      "prompt": "7、以下是计算xm的值的过程\nint power ( x, m ){//计算xm的值并返回。\n   y=________________; i=m;\n   while(i-->0)\n     y=y*x;\n   ________________;\n}",
       "answer": "1；return y",
       "analysis": "循环 m 次乘 x，时间复杂度 O(m)。若用快速幂可降为 O(log m)。"
     },
@@ -6075,8 +6066,7 @@ function underlineHtml(wide) {
 }
 
 function codeBlankHtml(block, wide) {
-  if (block) return `<span class="code-blank code-blank-line" aria-hidden="true"></span>`;
-  const cls = ["code-blank", wide ? "wide" : ""].filter(Boolean).join(" ");
+  const cls = ["code-blank", block ? "code-blank-line" : "", wide ? "wide" : ""].filter(Boolean).join(" ");
   return `<span class="${cls}" aria-hidden="true"></span>`;
 }
 
@@ -6114,8 +6104,8 @@ function splitCodePrompt(prompt, title) {
 }
 
 function renderBlankSegment(seg, type) {
-  const wide = Boolean(seg.block);
-  if (type === "code") return codeBlankHtml(wide, wide);
+  const wide = Boolean(seg.wide || seg.block);
+  if (type === "code") return codeBlankHtml(seg.block, wide);
   return underlineHtml(wide);
 }
 
@@ -6138,19 +6128,22 @@ function parseFillSegments(prompt, type) {
     const lines = String(prompt || "").split("\n");
     let blankIndex = 0;
     lines.forEach((line, lineIdx) => {
-      if (/^\s*;\s*$/.test(line)) {
+      if (/^\s*;\s*$/.test(line) || /^\s*_{2,}\s*;?\s*$/.test(line)) {
         const indent = line.match(/^\s*/)[0] || "";
         if (indent) segments.push({ type: "text", text: indent });
-        segments.push({ type: "blank", index: blankIndex++, block: true });
+        segments.push({ type: "blank", index: blankIndex++, block: true, wide: /_{4,}/.test(line) });
         if (lineIdx < lines.length - 1) segments.push({ type: "text", text: "\n" });
         return;
       }
       let last = 0;
-      const re = /（\s*）|\(\s{2,}\)|\(\s*\)|_{2,}|(?<=\S)\s{3,}(?=;|\s*$)/g;
+      const re = /（\s*）|\(\s*_{2,}\s*\)|\(\s{2,}\)|\(\s*\)|_{2,}|(?<=\S)\s{3,}(?=;|\s*$)/g;
       let m;
       while ((m = re.exec(line)) !== null) {
         if (m.index > last) segments.push({ type: "text", text: line.slice(last, m.index) });
-        segments.push({ type: "blank", index: blankIndex++, block: /\(\s{2,}\)/.test(m[0]) });
+        const token = m[0];
+        const block = /^\(\s{2,}\)$/.test(token) || /^\(\s*_{2,}\s*\)$/.test(token);
+        const wide = token.length >= 8 || /_{4,}/.test(token);
+        segments.push({ type: "blank", index: blankIndex++, block, wide });
         last = re.lastIndex;
       }
       if (last < line.length) segments.push({ type: "text", text: line.slice(last) });
