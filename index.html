@@ -1,0 +1,6351 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<title>算法设计与分析 · 交互式刷题</title>
+<style>
+:root {
+  --bg: #f6f7f3;
+  --panel: #ffffff;
+  --panel-soft: #fbfcf8;
+  --text: #1d2328;
+  --muted: #66706b;
+  --line: #dfe4dc;
+  --accent: #1f7a5a;
+  --accent-strong: #176848;
+  --accent-weak: #e5f3ed;
+  --warn: #b76623;
+  --danger: #b44242;
+  --danger-weak: #fae9e7;
+  --ok: #24764d;
+  --ok-weak: #e7f4ec;
+  --ink: #263238;
+  --shadow: 0 12px 34px rgba(31, 45, 39, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.mobile-menu-btn,
+.drawer-overlay {
+  display: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(31, 122, 90, 0.2);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(300px, 360px) 1fr;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+  background: #fbfcf8;
+  backdrop-filter: blur(10px);
+}
+
+.brand h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: 23px;
+  line-height: 1.25;
+}
+
+.brand p,
+.topbar p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mode-tabs {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.sub-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mode-tab,
+.filters select,
+.filters input,
+.list-head button,
+.ghost,
+.mark-btn,
+.self-check button,
+.pager button,
+.fill-area button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.mode-tab.active,
+.mode-tab:hover,
+.list-head button:hover,
+.ghost:hover {
+  border-color: #9ac9b6;
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+
+.mode-tab.active {
+  box-shadow: inset 0 0 0 1px rgba(31, 122, 90, 0.16);
+  font-weight: 700;
+}
+
+.main-menu {
+  width: 100%;
+  min-height: 46px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stats div {
+  padding: 12px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.stats small {
+  color: var(--muted);
+}
+
+.filters {
+  display: grid;
+  gap: 12px;
+}
+
+.filters label {
+  display: grid;
+  gap: 6px;
+}
+
+.filters span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.filters select,
+.filters input {
+  width: 100%;
+  padding: 0 12px;
+}
+
+.filters select:hover,
+.filters input:hover {
+  border-color: #9ac9b6;
+}
+
+.study-tools {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 0;
+}
+
+.study-tools button,
+.import-btn {
+  display: inline-grid;
+  place-items: center;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sidebar-dark-btn {
+  width: 100%;
+}
+
+.study-tools button:hover,
+.import-btn:hover {
+  border-color: #9ac9b6;
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+
+#importHint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 22px 0 10px;
+}
+
+.list-head button {
+  padding: 0 14px;
+}
+
+.question-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 8px;
+  padding-bottom: 24px;
+}
+
+.nav-item {
+  position: relative;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nav-item.done {
+  background: var(--ok-weak);
+  border-color: #b7dcc7;
+  color: var(--ok);
+}
+
+.nav-item.wrong {
+  background: var(--danger-weak);
+  border-color: #e3b5ad;
+  color: var(--danger);
+}
+
+.nav-item:hover {
+  transform: translateY(-1px);
+  border-color: #9ac9b6;
+}
+
+.nav-item.active,
+.nav-item.active.done,
+.nav-item.active.wrong {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(31, 122, 90, 0.18);
+}
+
+.nav-item.marked::after {
+  content: "★";
+  position: absolute;
+  top: -7px;
+  right: -4px;
+  color: var(--warn);
+  font-size: 13px;
+}
+
+.main {
+  min-width: 0;
+  padding: 30px clamp(18px, 4vw, 46px);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 1040px;
+  margin-bottom: 22px;
+}
+
+.topbar h2 {
+  margin: 2px 0 0;
+  font-size: 26px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ghost {
+  padding: 0 14px;
+}
+
+.question-card {
+  max-width: 1040px;
+  min-height: 640px;
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.question-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #edf0e8;
+  color: #3b463d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.progress-text {
+  margin-left: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.progress-bar {
+  height: 8px;
+  margin: 18px 0 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf0e8;
+}
+
+.progress-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.24s ease;
+}
+
+.mark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+}
+
+.mark-btn.active {
+  border-color: #e0b269;
+  background: #fff4df;
+  color: #8a5a10;
+}
+
+.question-card h3 {
+  margin: 22px 0 12px;
+  font-size: clamp(20px, 2.3vw, 24px);
+  line-height: 1.35;
+}
+
+.prompt,
+#answerText {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  line-height: 1.72;
+}
+
+.prompt {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+}
+
+.question-image {
+  display: none;
+  max-width: min(100%, 520px);
+  margin: 16px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.choice-area {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.option-btn {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  text-align: left;
+  line-height: 1.55;
+}
+
+.option-key {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eef1ec;
+  font-weight: 800;
+}
+
+.option-btn:hover {
+  border-color: #9ac9b6;
+  box-shadow: 0 8px 20px rgba(31, 45, 39, 0.06);
+}
+
+.option-btn.correct {
+  border-color: #83c49b;
+  background: var(--ok-weak);
+}
+
+.option-btn.correct .option-key {
+  background: var(--ok);
+  color: #fff;
+}
+
+.option-btn.wrong {
+  border-color: #df9a90;
+  background: var(--danger-weak);
+}
+
+.option-btn.wrong .option-key {
+  background: var(--danger);
+  color: #fff;
+}
+
+.fill-area,
+.subjective-area {
+  display: none;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.fill-area {
+  grid-template-columns: 1fr auto;
+  align-items: end;
+}
+
+.fill-area label,
+.subjective-area label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.fill-area input,
+.subjective-area textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  color: var(--text);
+}
+
+.fill-area button {
+  padding: 0 18px;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.result-line {
+  min-height: 28px;
+  margin-top: 16px;
+  font-weight: 700;
+}
+
+.result-line.ok {
+  color: var(--ok);
+}
+
+.result-line.bad {
+  color: var(--danger);
+}
+
+.answer-panel {
+  display: none;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #cfe5d9;
+  border-radius: 8px;
+  background: #f7fbf8;
+}
+
+.answer-panel.visible {
+  display: block;
+}
+
+.answer-panel.floating {
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  top: 128px;
+  z-index: 12;
+  max-height: min(58vh, 430px);
+  overflow: auto;
+  margin: 0;
+  border-color: #efb4aa;
+  background: rgba(255, 250, 248, 0.98);
+  cursor: pointer;
+  box-shadow: 0 18px 46px rgba(31, 45, 39, 0.18);
+  animation: float-answer-in 0.24s ease;
+}
+
+.answer-panel.floating::before {
+  content: "参考答案";
+  display: inline-flex;
+  margin-bottom: 10px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--danger-weak);
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.answer-panel.floating h4:first-child {
+  display: none;
+}
+
+.answer-panel h4 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.answer-panel p {
+  margin: 0 0 12px;
+  line-height: 1.7;
+}
+
+.confetti-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.correct-pop {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  display: grid;
+  gap: 4px;
+  min-width: 150px;
+  padding: 14px 20px;
+  border: 1px solid #9ac9b6;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--accent);
+  text-align: center;
+  box-shadow: 0 16px 42px rgba(31, 45, 39, 0.18);
+  animation: correct-pop 1.2s ease forwards;
+}
+
+.correct-pop strong {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.correct-pop span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.confetti-burst > span {
+  position: absolute;
+  top: -18px;
+  left: var(--x);
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--color);
+  animation: confetti-drop 1.25s ease-out var(--delay) forwards;
+}
+
+@keyframes correct-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 12px) scale(0.84);
+  }
+
+  16% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.06);
+  }
+
+  28% {
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  82% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -12px) scale(0.96);
+  }
+}
+
+@keyframes confetti-drop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -24px, 0) rotate(0deg);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx), 78vh, 0) rotate(var(--rot));
+  }
+}
+
+@keyframes float-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.self-check,
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.self-check button,
+.pager button {
+  padding: 0 18px;
+}
+
+#showAnswerBtn,
+#nextBtn {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+#showAnswerBtn:hover,
+#nextBtn:hover,
+.fill-area button:hover {
+  background: var(--accent-strong);
+}
+
+#knownBtn {
+  background: var(--ok-weak);
+  border-color: #b7dcc7;
+  color: var(--ok);
+}
+
+#unknownBtn {
+  background: var(--danger-weak);
+  border-color: #e3b5ad;
+  color: var(--danger);
+}
+
+.pager button:disabled:hover {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.empty {
+  padding: 28px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+  body {
+    background: var(--panel);
+  }
+
+  button:not(:disabled):active {
+    transform: scale(0.97);
+  }
+
+  body.drawer-open {
+    overflow: hidden;
+  }
+
+  .app-shell {
+    display: block;
+    min-height: 100dvh;
+  }
+
+  .mobile-menu-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 35;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #9ac9b6;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 8px 22px rgba(31, 45, 39, 0.1);
+  }
+
+  .mobile-menu-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    margin: 2px 0;
+    border-radius: 999px;
+    background: var(--accent);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  body.drawer-open .mobile-menu-btn span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  body.drawer-open .mobile-menu-btn span:nth-child(2) {
+    opacity: 0;
+  }
+
+  body.drawer-open .mobile-menu-btn span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .drawer-overlay {
+    position: fixed;
+    inset: 0 0 0 min(86vw, 340px);
+    z-index: 25;
+    display: block;
+    background: rgba(29, 35, 40, 0.24);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s ease;
+  }
+
+  body.drawer-open .drawer-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    width: min(86vw, 340px);
+    height: 100dvh;
+    padding: 64px 16px 20px;
+    overflow: auto;
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+    background: rgba(251, 252, 248, 0.96);
+    backdrop-filter: blur(10px);
+    box-shadow: 18px 0 38px rgba(31, 45, 39, 0.16);
+    transform: translateX(-105%);
+    transition: transform 0.28s ease;
+  }
+
+  body.drawer-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .topbar {
+    display: none;
+  }
+
+  .mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .sub-menu {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mode-tab {
+    min-height: 32px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .main-menu {
+    min-height: 36px;
+    font-size: 14px;
+  }
+
+  .main {
+    padding: 54px 0 0;
+  }
+
+  .question-card {
+    min-height: calc(100dvh - 54px);
+    padding: 14px 16px 18px;
+    border: 0;
+    border-radius: 0;
+    background: var(--panel);
+    box-shadow: none;
+    touch-action: pan-y;
+  }
+
+  .question-meta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .question-meta > div {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .badge {
+    min-height: 24px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .progress-text {
+    margin-left: 8px;
+    font-size: 12px;
+  }
+
+  .mark-btn {
+    width: 36px;
+    min-height: 32px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .mark-btn span:last-child {
+    display: none;
+  }
+
+  .progress-bar {
+    height: 5px;
+    margin: 10px 0 0;
+  }
+
+  .question-card h3 {
+    display: none;
+  }
+
+  .prompt {
+    margin-top: 14px;
+    padding: 14px;
+    font-size: 17px;
+    line-height: 1.68;
+  }
+
+  .question-image {
+    max-width: 100%;
+    margin: 12px 0 0;
+  }
+
+  .choice-area {
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .option-btn {
+    grid-template-columns: 32px 1fr;
+    min-height: 54px;
+    padding: 10px 12px;
+    font-size: 16px;
+  }
+
+  .option-key {
+    width: 30px;
+    height: 30px;
+  }
+
+  .fill-area,
+  .subjective-area {
+    margin-top: 14px;
+  }
+
+  .fill-area {
+    grid-template-columns: 1fr;
+  }
+
+  .fill-area.active {
+    grid-template-columns: 1fr;
+  }
+
+  .fill-area.active button {
+    width: 100%;
+  }
+
+  .subjective-area textarea {
+    min-height: 128px;
+  }
+
+  .result-line {
+    min-height: 22px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .answer-panel {
+    margin-top: 10px;
+    padding: 12px;
+  }
+
+  .answer-panel.floating {
+    left: 16px;
+    right: 16px;
+    top: 118px;
+    width: auto;
+    max-height: 48vh;
+    box-shadow: 0 18px 54px rgba(31, 45, 39, 0.22);
+  }
+
+  .answer-panel h4 {
+    font-size: 13px;
+  }
+
+  .self-check {
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr 0.9fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .self-check button,
+  .pager button,
+  .fill-area button {
+    width: 100%;
+    min-height: 42px;
+    padding: 0 10px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .stats div {
+    padding: 9px 4px;
+  }
+
+  .stats span {
+    font-size: 18px;
+  }
+
+  .filters {
+    gap: 10px;
+  }
+
+  .question-nav {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    max-height: none;
+    padding: 0 0 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+.settings-row { display: grid; gap: 8px; margin: 12px 0 0; }
+.settings-row label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer; }
+.settings-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
+.knowledge-panel { margin-top: 14px; padding: 14px 16px; border: 1px solid rgb(183, 220, 199); border-radius: 8px; background: rgb(247, 251, 248); }
+.knowledge-panel.hidden { display: none; }
+.knowledge-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.knowledge-tag { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 999px; background: var(--accent-weak); color: var(--accent); font-size: 12px; font-weight: 800; }
+.knowledge-summary { margin: 0 0 8px; line-height: 1.65; font-size: 14px; color: var(--text); }
+.knowledge-points { margin: 0; padding-left: 18px; line-height: 1.6; font-size: 13px; color: var(--muted); }
+.knowledge-points li { margin-bottom: 4px; }
+.knowledge-peek { margin-top: 12px; }
+.knowledge-peek-btn { width: 100%; min-height: 36px; border: 1px dashed rgb(154, 201, 182); border-radius: 8px; background: var(--panel); color: var(--accent); font-size: 13px; font-weight: 700; }
+.knowledge-peek-btn:hover { background: var(--accent-weak); }
+
+.fill-prompt { white-space: pre-wrap; word-break: break-word; line-height: 2; letter-spacing: 0.02em; }
+.fill-prompt .fill-uline {
+  display: inline-block;
+  min-width: 3.5em;
+  height: 1em;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 32%, transparent);
+  vertical-align: baseline;
+  margin: 0 2px;
+}
+.fill-prompt .fill-uline.wide { min-width: 6em; }
+
+.prompt.code-fill-wrap {
+  padding: 0;
+  border: none;
+  background: transparent;
+  white-space: normal;
+}
+.code-intro {
+  margin: 0 0 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  font-size: 15px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.code-block {
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #0d1117;
+  overflow-x: auto;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #e6edf3;
+  tab-size: 4;
+  -moz-tab-size: 4;
+  -webkit-font-smoothing: antialiased;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+body.dark .code-block {
+  background: #010409;
+  border-color: #3d444d;
+  color: #f0f6fc;
+}
+.code-block code {
+  display: block;
+  white-space: pre;
+  font-family: inherit;
+  tab-size: inherit;
+  -moz-tab-size: inherit;
+}
+.code-kw { color: #ff7b72; font-weight: 600; }
+.code-type { color: #79c0ff; }
+.code-cmt { color: #8b949e; font-style: italic; }
+.code-str { color: #a5d6ff; }
+.code-num { color: #ffa657; }
+.code-blank {
+  display: inline-block;
+  min-width: 4.5ch;
+  vertical-align: baseline;
+  position: relative;
+}
+.code-blank::after {
+  content: "____";
+  color: #7d8590;
+  letter-spacing: 0.06em;
+  font-weight: 400;
+}
+.code-blank.wide { min-width: 8ch; }
+.code-blank.wide::after { content: "________"; }
+.code-blank-line {
+  display: inline-block;
+  min-width: 10ch;
+  min-height: 1em;
+  vertical-align: baseline;
+  position: relative;
+}
+.code-blank-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 62%;
+  width: 100%;
+  max-width: 12ch;
+  border-bottom: 1px dashed #6e7681;
+}
+.fill-hint { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.fill-area.active { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 18px; }
+.fill-area.active .fill-hint { grid-column: 1 / -1; }
+.fill-area.active label { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+.fill-area.active input { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: var(--panel); color: var(--text); }
+
+.keyboard-hint { margin-top: 10px; font-size: 12px; color: var(--muted); text-align: center; }
+.toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(12px); z-index: 200; padding: 10px 18px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; max-width: min(92vw, 360px); text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.option-btn.selected:not(.correct):not(.wrong) { border-color: var(--accent); background: var(--accent-weak); }
+.option-btn.selected:not(.correct):not(.wrong) .option-key { background: var(--accent); color: #fff; }
+@media (max-width: 900px) {
+  .mobile-menu-btn { top: calc(10px + env(safe-area-inset-top, 0px)); left: calc(10px + env(safe-area-inset-left, 0px)); }
+  .main { padding-top: calc(54px + env(safe-area-inset-top, 0px)); }
+  .question-card { padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+  .pager { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .fill-area input, .subjective-area textarea, .filters input, .filters select { font-size: 16px; }
+}
+body { -webkit-tap-highlight-color: transparent; }
+button, .option-btn { touch-action: manipulation; }
+body.drawer-open { overscroll-behavior: none; }
+
+body.dark {
+  --bg: #111614; --panel: #1a201c; --panel-soft: #1e2620; --text: #e8ebe8;
+  --muted: #9aa89e; --line: #2d3830; --accent: #3cb88a; --accent-strong: #2d9a72;
+  --accent-weak: #1a2e24; --danger-weak: #2a1a18; --ok-weak: #152820;
+  --shadow: 0 12px 34px rgba(0,0,0,.35);
+}
+.selectable, .prompt, .answer-panel, .answer-panel p { -webkit-user-select:text; user-select:text; }
+
+
+/* ── 知识点复习模式 ── */
+.review-nav-wrap { display: none; }
+body.mode-review .review-nav-wrap { display: block; }
+body.mode-review .quiz-nav-wrap { display: none; }
+body.mode-review .quiz-only { display: none !important; }
+body.mode-review .stats { display: none; }
+
+.review-panel {
+  display: none;
+  padding: 0 24px 32px;
+  max-width: 920px;
+}
+body.mode-review .review-panel { display: block; }
+body.mode-review .question-card { display: none; }
+
+.review-hero {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--panel) 0%, var(--accent-weak) 100%);
+}
+.review-hero-kicker {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.review-hero h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.3;
+}
+.review-hero-sub {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.review-hero p:last-child {
+  margin: 0;
+  line-height: 1.65;
+  font-size: 15px;
+}
+
+.review-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.review-search {
+  flex: 1 1 200px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.review-expand-btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.review-chapter-nav {
+  display: grid;
+  gap: 6px;
+  max-height: 42vh;
+  overflow: auto;
+}
+.review-chapter-btn {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 8px;
+  align-items: start;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  text-align: left;
+}
+.review-chapter-btn:hover,
+.review-chapter-btn.active {
+  border-color: #9ac9b6;
+  background: var(--accent-weak);
+}
+.review-chapter-btn.active {
+  box-shadow: inset 0 0 0 1px rgba(31, 122, 90, 0.16);
+}
+.review-ch-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  border-radius: 6px;
+  background: var(--accent-weak);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+.review-ch-title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+}
+.review-ch-sub {
+  grid-column: 2;
+  margin-top: -2px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.review-exam-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.review-exam-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.review-blocks {
+  display: grid;
+  gap: 14px;
+}
+.review-block {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.review-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-soft);
+  cursor: pointer;
+  user-select: none;
+}
+.review-block-head h4 {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text);
+}
+.review-block-type {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.review-block-body {
+  padding: 14px 16px 16px;
+  line-height: 1.65;
+  font-size: 14px;
+}
+.review-block.collapsed .review-block-body { display: none; }
+.review-block.collapsed .review-block-head { border-bottom: 0; }
+
+.review-block-body ul {
+  margin: 0;
+  padding-left: 18px;
+}
+.review-block-body li { margin-bottom: 6px; }
+.review-block-body p { margin: 0; }
+
+.review-compare-wrap { overflow-x: auto; }
+.review-compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.review-compare th,
+.review-compare td {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.review-compare th {
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+.review-compare tr:nth-child(even) td { background: var(--panel-soft); }
+
+.review-tip {
+  padding: 12px 14px;
+  border-left: 3px solid var(--warn);
+  border-radius: 0 8px 8px 0;
+  background: #fff8f0;
+  color: #6b4a1e;
+  font-size: 13px;
+}
+body.dark .review-tip {
+  background: rgba(183, 102, 35, 0.12);
+  color: #e8c89a;
+}
+
+.review-footer {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.review-chapter-strip {
+  display: none;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+.review-chapter-chip {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.review-chapter-chip.active,
+.review-chapter-chip:hover {
+  border-color: #9ac9b6;
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .review-panel { padding: 0 16px 24px; }
+  .review-hero { padding: 16px; }
+  .review-hero h2 { font-size: 20px; }
+  .review-chapter-nav { max-height: none; }
+  .review-chapter-strip {
+    display: flex;
+  }
+}
+
+
+.review-glossary { display: grid; gap: 10px; }
+.review-glossary dt { font-weight: 800; color: var(--accent-strong); margin-top: 4px; }
+.review-glossary dd { margin: 0 0 8px 0; padding-left: 0; color: var(--text); line-height: 1.6; }
+
+.review-figure { margin: 0; }
+.review-figure img, .review-figure object, .review-figure svg {
+  display: block; max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff;
+}
+.review-figure figcaption {
+  margin-top: 8px; font-size: 13px; color: var(--muted); line-height: 1.55;
+}
+.review-example {
+  padding: 12px 14px; border-radius: 8px; background: var(--panel-soft); border: 1px solid var(--line);
+}
+.review-example h5 { margin: 0 0 8px; font-size: 14px; color: var(--accent-strong); }
+.review-example ol { margin: 8px 0 10px 18px; padding: 0; line-height: 1.6; font-size: 13px; }
+
+.answer-figures { margin-top: 14px; display: grid; gap: 16px; }
+.answer-figures h4 { margin: 0 0 8px; font-size: 14px; color: var(--accent); }
+.answer-figure { margin: 0; }
+.answer-figure img, .answer-figure object {
+  display: block; width: 100%; max-width: 720px; border: 1px solid var(--line); border-radius: 8px; background: #fff;
+}
+.answer-figure figcaption { margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+body.dark .review-figure img, body.dark .answer-figure object, body.dark .review-figure object { background: #1e2428; }
+
+</style>
+</head>
+<body>
+<div class="drawer-overlay" id="drawerOverlay" hidden></div>
+<button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="打开菜单" aria-controls="mobileDrawer" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  
+  <div class="app-shell">
+    <aside id="mobileDrawer" class="sidebar">
+      <div class="brand">
+        <div>
+          <h1>算法设计与分析</h1>
+          <p>复习练习刷题</p>
+        </div>
+      </div>
+
+      <nav class="mode-tabs" aria-label="学习模式">
+        <button class="mode-tab main-menu active" data-mode="practice">刷题模式</button>
+        <button class="mode-tab main-menu" data-mode="review">知识点复习</button>
+        <div class="sub-menu" aria-label="二级页面">
+          <button class="mode-tab" data-mode="memorize">背题</button>
+          <button class="mode-tab" data-status="wrong">错题</button>
+          <button class="mode-tab" data-status="marked">标记</button>
+        </div>
+      </nav>
+
+      <section class="stats quiz-only" aria-label="学习统计">
+        <div>
+          <span id="statTotal">144</span>
+          <small>题目</small>
+        </div>
+        <div>
+          <span id="statDone">29</span>
+          <small>已刷</small>
+        </div>
+        <div>
+          <span id="statAccuracy">61%</span>
+          <small>正确率</small>
+        </div>
+        <div>
+          <span id="statMarked">0</span>
+          <small>标记</small>
+        </div>
+      </section>
+
+      <div class="filters quiz-only">
+        <label>
+          <span>题型</span>
+          <select id="sectionFilter"><option value="全部题型">全部题型</option><option value="选择题">选择题</option><option value="填空题">填空题</option><option value="算法填空">算法填空</option><option value="问答题">问答题</option><option value="算法设计与分析题">算法设计与分析题</option></select>
+        </label>
+        <label>
+          <span>范围</span>
+          <select id="statusFilter">
+            <option value="all">全部题目</option>
+            <option value="unanswered">未刷题</option>
+            <option value="done">已刷题</option>
+            <option value="wrong">错题本</option>
+            <option value="marked">已标记</option>
+          </select>
+        </label>
+        <label>
+          <span>搜索</span>
+          <input id="searchInput" type="search" placeholder="题干 / 答案 / 解析">
+        </label>
+      </div>
+
+
+
+      <section class="study-tools quiz-only" aria-label="题库工具">
+        <button id="restartBtn" type="button">重新刷题</button>
+        <button class="ghost sidebar-dark-btn" type="button" onclick="toggleDarkMode()">深色模式</button>
+        <label class="import-btn" for="importFile">导入新题</label>
+        <input id="importFile" type="file" accept="application/json,.json" hidden />
+        <button id="restoreBankBtn" type="button">恢复内置题库</button>
+        <small id="importHint">支持 GPT 生成的 JSON 题库文件</small>
+      </section>
+
+      
+    <div class="settings-row quiz-only" aria-label="刷题设置">
+      <label><input type="checkbox" id="setAutoAdvance" /> 答对自动下一题</label>
+      <label><input type="checkbox" id="setShowKnowledge" /> 答题后显示知识点</label>
+      <label><input type="checkbox" id="setPeekKnowledge" /> 刷题前可查看知识点</label>
+    </div>
+
+    <div class="quiz-nav-wrap">
+      <div class="list-head">
+        <strong>题号</strong>
+        <button id="shuffleBtn" type="button">随机</button>
+      </div>
+      <div id="questionNav" class="question-nav" aria-label="题目列表"></div>
+    </div>
+
+    <div class="review-nav-wrap" aria-label="章节导航">
+      <div class="list-head"><strong>章节</strong></div>
+      <div id="reviewChapterNav" class="review-chapter-nav"></div>
+    </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p id="sourceText">算法设计与分析复习练习-20260508.docx · 144 题</p>
+          <h2 id="pageTitle">刷题模式</h2>
+        </div>
+        <div class="top-actions">
+          <button class="ghost" type="button" onclick="toggleDarkMode()">深色模式</button>
+          <button id="resetBtn" class="ghost" type="button">重置记录</button>
+        </div>
+      </header>
+
+      
+      <section id="reviewPanel" class="review-panel" aria-label="知识点复习">
+        <header class="review-hero" id="reviewHero"></header>
+        <div id="reviewChapterStrip" class="review-chapter-strip" aria-label="章节快捷切换"></div>
+        <div class="review-toolbar">
+          <input id="reviewSearch" class="review-search" type="search" placeholder="搜索本章要点…" />
+          <button type="button" id="reviewExpandAll" class="review-expand-btn">全部展开</button>
+          <button type="button" id="reviewCollapseAll" class="review-expand-btn">全部收起</button>
+        </div>
+        <div id="reviewExamTags" class="review-exam-tags"></div>
+        <div id="reviewBlocks" class="review-blocks"></div>
+        <footer class="review-footer" id="reviewFooter"></footer>
+      </section>
+
+      <section class="question-card" aria-live="polite">
+        <div class="question-meta">
+          <div>
+            <span id="typeBadge" class="badge">选择题</span>
+            <span id="progressText" class="progress-text">30 / 144</span>
+          </div>
+          <button id="markBtn" class="mark-btn" type="button" aria-pressed="false" title="标记此题">
+            <span id="markIcon">☆</span>
+            <span>标记</span>
+          </button>
+        </div>
+        <div class="progress-bar" aria-hidden="true">
+          <span id="progressBar" style="width: 21%;"></span>
+        </div>
+
+        <h3 id="questionTitle">选择题 30</h3>
+        <div id="questionPrompt" class="prompt">下列算法中通常以自底向下的方式求解最优解的是（ ）。</div>
+        <img id="questionImage" class="question-image" alt="题目配图" style="display: none;">
+
+        <div id="choiceArea" class="choice-area"><button class="option-btn" data-option="A" aria-pressed="false">
+        <span class="option-key">A</span>
+        <span>分治法</span>
+      </button><button class="option-btn" data-option="B" aria-pressed="false">
+        <span class="option-key">B</span>
+        <span>动态规划法</span>
+      </button><button class="option-btn" data-option="C" aria-pressed="false">
+        <span class="option-key">C</span>
+        <span>贪心法</span>
+      </button><button class="option-btn" data-option="D" aria-pressed="false">
+        <span class="option-key">D</span>
+        <span>回溯法</span>
+      </button></div>
+
+        <div id="fillArea" class="fill-area" style="display: none;">
+          <p id="fillHint" class="fill-hint"></p>
+          <label for="fillInput">你的答案</label>
+          <input id="fillInput" type="text" autocomplete="off" placeholder="多个空请用中文分号「；」分隔" />
+          <button id="submitFillBtn" type="button">提交答案</button>
+        </div>
+
+        <div id="subjectiveArea" class="subjective-area" style="display: none;">
+          <label for="memoryInput">默写区</label>
+          <textarea id="memoryInput" rows="5" placeholder="先自己写一遍，再对照参考答案"></textarea>
+        </div>
+
+        
+        <div id="knowledgePeek" class="knowledge-peek" hidden>
+          <button type="button" id="knowledgePeekBtn" class="knowledge-peek-btn">查看本题相关知识点</button>
+        </div>
+
+        <section id="knowledgePanel" class="knowledge-panel hidden" aria-label="知识点讲解">
+          <div class="knowledge-head">
+            <span id="knowledgeTag" class="knowledge-tag">知识点</span>
+          </div>
+          <p id="knowledgeSummary" class="knowledge-summary"></p>
+          <ul id="knowledgePoints" class="knowledge-points"></ul>
+        </section>
+
+        <div id="resultLine" class="result-line "></div>
+
+        <section id="answerPanel" class="answer-panel">
+          <h4>参考答案</h4>
+          <pre id="answerText">A</pre>
+          <div id="answerFigures" class="answer-figures" hidden></div>
+          <h4>简析</h4>
+          <p id="analysisText">分治递归通常自顶向下求解。</p>
+        </section>
+
+        <div class="self-check">
+          <button id="showAnswerBtn" type="button">查看答案</button>
+          <button id="knownBtn" type="button">会了</button>
+          <button id="unknownBtn" type="button">不会</button>
+        </div>
+
+        <div class="pager">
+          <button id="prevBtn" type="button">上一题</button>
+          <button id="nextBtn" type="button">下一题</button>
+        </div>
+      </section>
+    </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</div>
+<script>
+window.QUESTION_BANK = {
+  "meta": {
+    "title": "算法设计与分析复习练习",
+    "source": "算法设计与分析复习练习-20260508.docx + 复习填空20题",
+    "count": 144
+  },
+  "questions": [
+    {
+      "id": "choice-01",
+      "type": "choice",
+      "section": "选择题",
+      "number": 1,
+      "title": "选择题 1",
+      "prompt": "二分搜索算法是利用（ ）实现的算法。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "二分搜索每次把问题规模减半，属于分治。"
+    },
+    {
+      "id": "choice-02",
+      "type": "choice",
+      "section": "选择题",
+      "number": 2,
+      "title": "选择题 2",
+      "prompt": "下列不是动态规划算法基本步骤的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "找出最优解的性质"
+        },
+        {
+          "key": "B",
+          "text": "构造最优解"
+        },
+        {
+          "key": "C",
+          "text": "算出最优解"
+        },
+        {
+          "key": "D",
+          "text": "定义最优解"
+        }
+      ],
+      "answer": "D",
+      "analysis": "动态规划步骤是找性质、列递推、算最优值、构造解；不是“定义最优解”。"
+    },
+    {
+      "id": "choice-03",
+      "type": "choice",
+      "section": "选择题",
+      "number": 3,
+      "title": "选择题 3",
+      "prompt": "最大效益优先是（ ）的一种搜索方式。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "最大效益优先是分支限界法选择扩展结点的方式。"
+    },
+    {
+      "id": "choice-04",
+      "type": "choice",
+      "section": "选择题",
+      "number": 4,
+      "title": "选择题 4",
+      "prompt": "回溯法解旅行售货员问题时的解空间树是（）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "子集树"
+        },
+        {
+          "key": "B",
+          "text": "排列树"
+        },
+        {
+          "key": "D",
+          "text": "广度优先生成树"
+        },
+        {
+          "key": "C",
+          "text": "深度优先生成树"
+        }
+      ],
+      "answer": "B",
+      "analysis": "旅行售货员问题要排列城市访问顺序，解空间树是排列树。"
+    },
+    {
+      "id": "choice-05",
+      "type": "choice",
+      "section": "选择题",
+      "number": 5,
+      "title": "选择题 5",
+      "prompt": "下列算法中通常以自底向上的方式求解最优解的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "备忘录法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "B",
+      "analysis": "动态规划常按子问题规模自底向上填表。"
+    },
+    {
+      "id": "choice-06",
+      "type": "choice",
+      "section": "选择题",
+      "number": 6,
+      "title": "选择题 6",
+      "prompt": "衡量一个算法好坏的标准是（）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "运行速度快"
+        },
+        {
+          "key": "B",
+          "text": "占用空间少"
+        },
+        {
+          "key": "C",
+          "text": "时间复杂度低"
+        },
+        {
+          "key": "D",
+          "text": "代码短"
+        }
+      ],
+      "answer": "C",
+      "analysis": "考试中一般用时间复杂度优先衡量算法效率。"
+    },
+    {
+      "id": "choice-07",
+      "type": "choice",
+      "section": "选择题",
+      "number": 7,
+      "title": "选择题 7",
+      "prompt": "以下不可以使用分治法求解的是（）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "棋盘覆盖问题"
+        },
+        {
+          "key": "B",
+          "text": "选择问题"
+        },
+        {
+          "key": "C",
+          "text": "归并排序"
+        },
+        {
+          "key": "D",
+          "text": "0/1背包问题"
+        }
+      ],
+      "answer": "D",
+      "analysis": "0/1背包典型用动态规划、回溯或分支限界，不用普通分治。"
+    },
+    {
+      "id": "choice-08",
+      "type": "choice",
+      "section": "选择题",
+      "number": 8,
+      "title": "选择题 8",
+      "prompt": "实现循环赛日程表利用的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "循环赛日程表可把选手分组递归构造，属分治。"
+    },
+    {
+      "id": "choice-09",
+      "type": "choice",
+      "section": "选择题",
+      "number": 9,
+      "title": "选择题 9",
+      "prompt": "下面不是分支界限法搜索方式的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "广度优先"
+        },
+        {
+          "key": "B",
+          "text": "最小耗费优先"
+        },
+        {
+          "key": "C",
+          "text": "最大效益优先"
+        },
+        {
+          "key": "D",
+          "text": "深度优先"
+        }
+      ],
+      "answer": "D",
+      "analysis": "深度优先是回溯法常用策略，不是分支限界法常见方式。"
+    },
+    {
+      "id": "choice-10",
+      "type": "choice",
+      "section": "选择题",
+      "number": 10,
+      "title": "选择题 10",
+      "prompt": "下列算法中通常以深度优先方式系统搜索问题解的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "备忘录法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "D",
+      "analysis": "回溯法按深度优先系统搜索解空间树。"
+    },
+    {
+      "id": "choice-11",
+      "type": "choice",
+      "section": "选择题",
+      "number": 11,
+      "title": "选择题 11",
+      "prompt": "备忘录方法是哪（一）种算法的变形。（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "B",
+      "analysis": "备忘录法是动态规划自顶向下实现的变形。"
+    },
+    {
+      "id": "choice-12",
+      "type": "choice",
+      "section": "选择题",
+      "number": 12,
+      "title": "选择题 12",
+      "prompt": "哈弗曼编码的贪心算法所需的计算时间为（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "O（n2n）"
+        },
+        {
+          "key": "B",
+          "text": "O（nlogn）"
+        },
+        {
+          "key": "C",
+          "text": "O（2n）"
+        },
+        {
+          "key": "D",
+          "text": "O（n）"
+        }
+      ],
+      "answer": "B",
+      "analysis": "哈夫曼编码用优先队列反复合并，时间常为 O(nlogn)。"
+    },
+    {
+      "id": "choice-13",
+      "type": "choice",
+      "section": "选择题",
+      "number": 13,
+      "title": "选择题 13",
+      "prompt": "分支限界法解最大团问题时，活结点表的组织形式是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "最小堆"
+        },
+        {
+          "key": "B",
+          "text": "最大堆"
+        },
+        {
+          "key": "C",
+          "text": "栈"
+        },
+        {
+          "key": "D",
+          "text": "数组"
+        }
+      ],
+      "answer": "B",
+      "analysis": "最大团按最大效益优先时活结点表常用最大堆。"
+    },
+    {
+      "id": "choice-14",
+      "type": "choice",
+      "section": "选择题",
+      "number": 14,
+      "title": "选择题 14",
+      "prompt": "最长公共子序列算法利用的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "B",
+      "analysis": "最长公共子序列具有重叠子问题和最优子结构，用动态规划。"
+    },
+    {
+      "id": "choice-15",
+      "type": "choice",
+      "section": "选择题",
+      "number": 15,
+      "title": "选择题 15",
+      "prompt": "实现棋盘覆盖算法利用的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "棋盘覆盖把棋盘递归分成四块，是分治。"
+    },
+    {
+      "id": "choice-16",
+      "type": "choice",
+      "section": "选择题",
+      "number": 16,
+      "title": "选择题 16",
+      "prompt": "下面是贪心算法的基本要素的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "重叠子问题"
+        },
+        {
+          "key": "B",
+          "text": "构造最优解"
+        },
+        {
+          "key": "C",
+          "text": "贪心选择性质"
+        },
+        {
+          "key": "D",
+          "text": "定义最优解"
+        }
+      ],
+      "answer": "C",
+      "analysis": "贪心算法核心要素之一是贪心选择性质。"
+    },
+    {
+      "id": "choice-17",
+      "type": "choice",
+      "section": "选择题",
+      "number": 17,
+      "title": "选择题 17",
+      "prompt": "回溯法的效率不依赖于下列哪些因素（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "满足显约束的值的个数"
+        },
+        {
+          "key": "B",
+          "text": "计算约束函数的时间"
+        },
+        {
+          "key": "C",
+          "text": "计算限界函数的时间"
+        },
+        {
+          "key": "D",
+          "text": "确定解空间的时间"
+        }
+      ],
+      "answer": "D",
+      "analysis": "效率主要依赖约束/限界函数和满足约束的结点数。"
+    },
+    {
+      "id": "choice-18",
+      "type": "choice",
+      "section": "选择题",
+      "number": 18,
+      "title": "选择题 18",
+      "prompt": "下面哪种函数是回溯法中为避免无效搜索采取的策略（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "递归函数"
+        },
+        {
+          "key": "B",
+          "text": "剪枝函数"
+        },
+        {
+          "key": "C",
+          "text": "随机数函数"
+        },
+        {
+          "key": "D",
+          "text": "搜索函数"
+        }
+      ],
+      "answer": "B",
+      "analysis": "剪枝函数用来提前排除无效分支。"
+    },
+    {
+      "id": "choice-19",
+      "type": "choice",
+      "section": "选择题",
+      "number": 19,
+      "title": "选择题 19",
+      "prompt": "从活结点表中选择下一个扩展结点的不同方式将导致不同的分支限界法，以下除（ ）之外都是最常见的方式。",
+      "options": [
+        {
+          "key": "A",
+          "text": "队列式分支限界法"
+        },
+        {
+          "key": "B",
+          "text": "优先队列式分支限界法"
+        },
+        {
+          "key": "C",
+          "text": "栈式分支限界法"
+        },
+        {
+          "key": "D",
+          "text": "FIFO分支限界法"
+        }
+      ],
+      "answer": "C",
+      "analysis": "栈式本质是深度优先，更属于回溯；常见分支限界有队列式和优先队列式。"
+    },
+    {
+      "id": "choice-20",
+      "type": "choice",
+      "section": "选择题",
+      "number": 20,
+      "title": "选择题 20",
+      "prompt": "（ ）是贪心算法与动态规划算法的共同点。",
+      "options": [
+        {
+          "key": "A",
+          "text": "重叠子问题"
+        },
+        {
+          "key": "B",
+          "text": "构造最优解"
+        },
+        {
+          "key": "C",
+          "text": "贪心选择性质"
+        },
+        {
+          "key": "D",
+          "text": "最优子结构性质"
+        }
+      ],
+      "answer": "D",
+      "analysis": "贪心和动态规划都要求最优子结构。"
+    },
+    {
+      "id": "choice-21",
+      "type": "choice",
+      "section": "选择题",
+      "number": 21,
+      "title": "选择题 21",
+      "prompt": "矩阵连乘问题的算法可由（）设计实现。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限算法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划算法"
+        },
+        {
+          "key": "C",
+          "text": "贪心算法"
+        },
+        {
+          "key": "D",
+          "text": "回溯算法"
+        }
+      ],
+      "answer": "B",
+      "analysis": "矩阵连乘用动态规划求最少乘法次数。"
+    },
+    {
+      "id": "choice-22",
+      "type": "choice",
+      "section": "选择题",
+      "number": 22,
+      "title": "选择题 22",
+      "prompt": "分支限界法解旅行售货员问题时，活结点表的组织形式是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "最小堆"
+        },
+        {
+          "key": "B",
+          "text": "最大堆"
+        },
+        {
+          "key": "C",
+          "text": "栈"
+        },
+        {
+          "key": "D",
+          "text": "数组"
+        }
+      ],
+      "answer": "A",
+      "analysis": "TSP 是最小化问题，分支限界常用最小堆按下界扩展。"
+    },
+    {
+      "id": "choice-23",
+      "type": "choice",
+      "section": "选择题",
+      "number": 23,
+      "title": "选择题 23",
+      "prompt": "Strassen矩阵乘法是利用（ ）实现的算法。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "Strassen 矩阵乘法是分治算法。"
+    },
+    {
+      "id": "choice-24",
+      "type": "choice",
+      "section": "选择题",
+      "number": 24,
+      "title": "选择题 24",
+      "prompt": "使用分治法求解不需要满足的条件是（）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "子问题必须是一样的"
+        },
+        {
+          "key": "B",
+          "text": "子问题不能够重复"
+        },
+        {
+          "key": "C",
+          "text": "子问题的解可以合并"
+        },
+        {
+          "key": "D",
+          "text": "原问题和子问题使用相同的方法解"
+        }
+      ],
+      "answer": "A",
+      "analysis": "分治只要求子问题同类型且可合并，不要求子问题完全一样。"
+    },
+    {
+      "id": "choice-25",
+      "type": "choice",
+      "section": "选择题",
+      "number": 25,
+      "title": "选择题 25",
+      "prompt": "下面问题（）不能使用贪心法解决。",
+      "options": [
+        {
+          "key": "A",
+          "text": "单源最短路径问题"
+        },
+        {
+          "key": "B",
+          "text": "N皇后问题"
+        },
+        {
+          "key": "C",
+          "text": "最小花费生成树问题"
+        },
+        {
+          "key": "D",
+          "text": "背包问题"
+        }
+      ],
+      "answer": "B",
+      "analysis": "N 皇后是约束搜索问题，通常用回溯。"
+    },
+    {
+      "id": "choice-26",
+      "type": "choice",
+      "section": "选择题",
+      "number": 26,
+      "title": "选择题 26",
+      "prompt": "下列算法中不能解决0/1背包问题的是（）",
+      "options": [
+        {
+          "key": "A",
+          "text": "贪心法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划"
+        },
+        {
+          "key": "C",
+          "text": "回溯法"
+        },
+        {
+          "key": "D",
+          "text": "分支限界法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "0/1背包不能用简单贪心得到全局最优。"
+    },
+    {
+      "id": "choice-27",
+      "type": "choice",
+      "section": "选择题",
+      "number": 27,
+      "title": "选择题 27",
+      "prompt": "回溯法搜索状态空间树是按照（）的顺序。",
+      "options": [
+        {
+          "key": "A",
+          "text": "中序遍历"
+        },
+        {
+          "key": "B",
+          "text": "广度优先遍历"
+        },
+        {
+          "key": "C",
+          "text": "深度优先遍历"
+        },
+        {
+          "key": "D",
+          "text": "层次优先遍历"
+        }
+      ],
+      "answer": "C",
+      "analysis": "回溯按深度优先遍历状态空间树。"
+    },
+    {
+      "id": "choice-28",
+      "type": "choice",
+      "section": "选择题",
+      "number": 28,
+      "title": "选择题 28",
+      "prompt": "实现合并排序利用的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "合并排序先分后合，是分治。"
+    },
+    {
+      "id": "choice-29",
+      "type": "choice",
+      "section": "选择题",
+      "number": 29,
+      "title": "选择题 29",
+      "prompt": "下列是动态规划算法基本要素的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "定义最优解"
+        },
+        {
+          "key": "B",
+          "text": "构造最优解"
+        },
+        {
+          "key": "C",
+          "text": "算出最优解"
+        },
+        {
+          "key": "D",
+          "text": "子问题重叠性质"
+        }
+      ],
+      "answer": "D",
+      "analysis": "动态规划基本要素是最优子结构和子问题重叠。"
+    },
+    {
+      "id": "choice-30",
+      "type": "choice",
+      "section": "选择题",
+      "number": 30,
+      "title": "选择题 30",
+      "prompt": "下列算法中通常以自顶向下的方式求解最优解的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "分治法/递归自上而下分解子问题；动态规划通常自底向上填表。"
+    },
+    {
+      "id": "choice-31",
+      "type": "choice",
+      "section": "选择题",
+      "number": 31,
+      "title": "选择题 31",
+      "prompt": "采用广度优先策略搜索的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "分支限界法常按广度优先或最小耗费优先扩展。"
+    },
+    {
+      "id": "choice-32",
+      "type": "choice",
+      "section": "选择题",
+      "number": 32,
+      "title": "选择题 32",
+      "prompt": "合并排序算法是利用（ ）实现的算法。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "合并排序是分治。"
+    },
+    {
+      "id": "choice-33",
+      "type": "choice",
+      "section": "选择题",
+      "number": 33,
+      "title": "选择题 33",
+      "prompt": "背包问题的贪心算法所需的计算时间为（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "O（n2n）"
+        },
+        {
+          "key": "B",
+          "text": "O（nlogn）"
+        },
+        {
+          "key": "C",
+          "text": "O（2n）"
+        },
+        {
+          "key": "D",
+          "text": "O（n）"
+        }
+      ],
+      "answer": "B",
+      "analysis": "背包贪心通常先按单位价值排序，O(nlogn)。"
+    },
+    {
+      "id": "choice-34",
+      "type": "choice",
+      "section": "选择题",
+      "number": 34,
+      "title": "选择题 34",
+      "prompt": "实现大整数的乘法是利用的算法（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "贪心法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "分治策略"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "C",
+      "analysis": "大整数乘法可用分治降低复杂度。"
+    },
+    {
+      "id": "choice-35",
+      "type": "choice",
+      "section": "选择题",
+      "number": 35,
+      "title": "选择题 35",
+      "prompt": "0-1背包问题的回溯算法求解最优解所需的计算时间为（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "O（n2n）"
+        },
+        {
+          "key": "B",
+          "text": "O（nlogn）"
+        },
+        {
+          "key": "C",
+          "text": "O（2n）"
+        },
+        {
+          "key": "D",
+          "text": "O（n）"
+        }
+      ],
+      "answer": "C",
+      "analysis": "0/1背包回溯最坏要检查子集，O(2^n)。"
+    },
+    {
+      "id": "choice-36",
+      "type": "choice",
+      "section": "选择题",
+      "number": 36,
+      "title": "选择题 36",
+      "prompt": "采用最大效益优先搜索方式的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "最大效益优先属于分支限界法。"
+    },
+    {
+      "id": "choice-37",
+      "type": "choice",
+      "section": "选择题",
+      "number": 37,
+      "title": "选择题 37",
+      "prompt": "贪心算法与动态规划算法的主要区别是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "最优子结构"
+        },
+        {
+          "key": "B",
+          "text": "贪心选择性质"
+        },
+        {
+          "key": "C",
+          "text": "构造最优解"
+        },
+        {
+          "key": "D",
+          "text": "定义最优解"
+        }
+      ],
+      "answer": "B",
+      "analysis": "二者主要差别是贪心选择性质。"
+    },
+    {
+      "id": "choice-38",
+      "type": "choice",
+      "section": "选择题",
+      "number": 38,
+      "title": "选择题 38",
+      "prompt": "实现最大子段和利用的算法是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "B",
+      "analysis": "最大子段和常用动态规划 O(n) 求解。"
+    },
+    {
+      "id": "choice-39",
+      "type": "choice",
+      "section": "选择题",
+      "number": 39,
+      "title": "选择题 39",
+      "prompt": "优先队列式分支限界法选取扩展结点的原则是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "先进先出"
+        },
+        {
+          "key": "B",
+          "text": "后进先出"
+        },
+        {
+          "key": "C",
+          "text": "结点的优先级"
+        },
+        {
+          "key": "D",
+          "text": "随机"
+        }
+      ],
+      "answer": "C",
+      "analysis": "优先队列按结点优先级选扩展结点。"
+    },
+    {
+      "id": "choice-40",
+      "type": "choice",
+      "section": "选择题",
+      "number": 40,
+      "title": "选择题 40",
+      "prompt": "背包问题的贪心算法所需的计算时间为（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "O（n2n）"
+        },
+        {
+          "key": "B",
+          "text": "O（nlogn）"
+        },
+        {
+          "key": "C",
+          "text": "O（2n）"
+        },
+        {
+          "key": "D",
+          "text": "O（n）"
+        }
+      ],
+      "answer": "B",
+      "analysis": "同第33题，排序主导，O(nlogn)。"
+    },
+    {
+      "id": "choice-41",
+      "type": "choice",
+      "section": "选择题",
+      "number": 41,
+      "title": "选择题 41",
+      "prompt": "广度优先是（ ）的一种搜索方式。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限法"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "A",
+      "analysis": "广度优先是分支限界法的一种搜索方式。"
+    },
+    {
+      "id": "choice-42",
+      "type": "choice",
+      "section": "选择题",
+      "number": 42,
+      "title": "选择题 42",
+      "prompt": "在对问题的解空间树进行搜索的方法中，一个活结点最多有一次机会成为扩展结点的是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "回溯法"
+        },
+        {
+          "key": "B",
+          "text": "分支限界法"
+        },
+        {
+          "key": "C",
+          "text": "回溯法和分支限界法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法求解子集树问题"
+        }
+      ],
+      "answer": "B",
+      "analysis": "分支限界法中活结点被取出扩展后即成为死结点。"
+    },
+    {
+      "id": "choice-43",
+      "type": "choice",
+      "section": "选择题",
+      "number": 43,
+      "title": "选择题 43",
+      "prompt": "一个问题可用动态规划算法或贪心算法求解的关键特征是问题的（   ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "重叠子问题"
+        },
+        {
+          "key": "B",
+          "text": "最优子结构性质"
+        },
+        {
+          "key": "C",
+          "text": "贪心选择性质"
+        },
+        {
+          "key": "D",
+          "text": "定义最优解"
+        }
+      ],
+      "answer": "B",
+      "analysis": "动态规划和贪心共同关键特征是最优子结构。"
+    },
+    {
+      "id": "choice-44",
+      "type": "choice",
+      "section": "选择题",
+      "number": 44,
+      "title": "选择题 44",
+      "prompt": "采用贪心算法的最优装载问题的主要计算量在于将集装箱依其重量从小到大排序，故算法的时间复杂度为（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "O（n2n）"
+        },
+        {
+          "key": "B",
+          "text": "O（nlogn）"
+        },
+        {
+          "key": "C",
+          "text": "O（2n）"
+        },
+        {
+          "key": "D",
+          "text": "O（n）"
+        }
+      ],
+      "answer": "B",
+      "analysis": "最优装载先按重量升序排序，O(nlogn)。"
+    },
+    {
+      "id": "choice-45",
+      "type": "choice",
+      "section": "选择题",
+      "number": 45,
+      "title": "选择题 45",
+      "prompt": "以深度优先方式系统搜索问题解的算法称为（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分支界限算法"
+        },
+        {
+          "key": "B",
+          "text": "概率算法"
+        },
+        {
+          "key": "C",
+          "text": "贪心算法"
+        },
+        {
+          "key": "D",
+          "text": "回溯算法"
+        }
+      ],
+      "answer": "D",
+      "analysis": "深度优先系统搜索问题解称为回溯法。"
+    },
+    {
+      "id": "choice-46",
+      "type": "choice",
+      "section": "选择题",
+      "number": 46,
+      "title": "选择题 46",
+      "prompt": "实现最长公共子序列利用的算法是（   ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治策略"
+        },
+        {
+          "key": "B",
+          "text": "动态规划法"
+        },
+        {
+          "key": "C",
+          "text": "贪心法"
+        },
+        {
+          "key": "D",
+          "text": "回溯法"
+        }
+      ],
+      "answer": "B",
+      "analysis": "最长公共子序列用动态规划。"
+    },
+    {
+      "id": "choice-47",
+      "type": "choice",
+      "section": "选择题",
+      "number": 47,
+      "title": "选择题 47",
+      "prompt": "算法是由若干条指令组成的有穷序列，而且满足以下性质（   ）\n（1） 输入：有0个或多个输入\n（2） 输出：至少有一个输出\n（3） 确定性：指令清晰，无歧义\n（4） 有限性：指令执行次数有限，而且执行时间有限",
+      "options": [
+        {
+          "key": "A",
+          "text": "(1)(2)(3)"
+        },
+        {
+          "key": "B",
+          "text": "(1)(2)(4)"
+        },
+        {
+          "key": "C",
+          "text": "(1)(3)(4)"
+        },
+        {
+          "key": "D",
+          "text": "(1)(2)(3)(4)"
+        }
+      ],
+      "answer": "D",
+      "analysis": "题中四条均为算法性质；通常还包括可行性。"
+    },
+    {
+      "id": "choice-48",
+      "type": "choice",
+      "section": "选择题",
+      "number": 48,
+      "title": "选择题 48",
+      "prompt": "函数 32^n+10nlogn 的渐进表达式是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "2n"
+        },
+        {
+          "key": "B",
+          "text": "32n"
+        },
+        {
+          "key": "C",
+          "text": "nlogn"
+        },
+        {
+          "key": "D",
+          "text": "10nlogn"
+        }
+      ],
+      "answer": "B",
+      "analysis": "指数项 32^n 增长最快，渐进阶取它。"
+    },
+    {
+      "id": "choice-49",
+      "type": "choice",
+      "section": "选择题",
+      "number": 49,
+      "title": "选择题 49",
+      "prompt": "大整数乘法算法是（ ）算法。",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治"
+        },
+        {
+          "key": "B",
+          "text": "贪心"
+        },
+        {
+          "key": "C",
+          "text": "动态规划"
+        },
+        {
+          "key": "D",
+          "text": "穷举"
+        }
+      ],
+      "answer": "A",
+      "analysis": "大整数乘法典型算法是分治。"
+    },
+    {
+      "id": "choice-50",
+      "type": "choice",
+      "section": "选择题",
+      "number": 50,
+      "title": "选择题 50",
+      "prompt": "用动态规划算法解决最大子段和问题，其时间复杂性为（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "O(logn)"
+        },
+        {
+          "key": "B",
+          "text": "O(n)"
+        },
+        {
+          "key": "C",
+          "text": "O(n2)"
+        },
+        {
+          "key": "D",
+          "text": "O(nlogn)"
+        }
+      ],
+      "answer": "B",
+      "analysis": "最大子段和动态规划只需一次扫描，O(n)。"
+    },
+    {
+      "id": "choice-51",
+      "type": "choice",
+      "section": "选择题",
+      "number": 51,
+      "title": "选择题 51",
+      "prompt": "解决活动安排问题，最好用（  ）算法",
+      "options": [
+        {
+          "key": "A",
+          "text": "分治"
+        },
+        {
+          "key": "B",
+          "text": "贪心"
+        },
+        {
+          "key": "C",
+          "text": "动态规划"
+        },
+        {
+          "key": "D",
+          "text": "穷举"
+        }
+      ],
+      "answer": "B",
+      "analysis": "活动安排选最早结束活动，是经典贪心。"
+    },
+    {
+      "id": "choice-52",
+      "type": "choice",
+      "section": "选择题",
+      "number": 52,
+      "title": "选择题 52",
+      "prompt": "设 f(N)、g(N) 是定义在正数集上的正函数，如果存在正的常数 C 和自然数 N0，使得当 N≥N0 时有 f(N)≤Cg(N)，则称函数 f(N) 当 N 充分大时有上界 g(N)，记作 f(N)∈O(g(N))，即 f(N) 的阶（ ）g(N) 的阶。",
+      "options": [
+        {
+          "key": "A",
+          "text": "不高于"
+        },
+        {
+          "key": "B",
+          "text": "不低于"
+        },
+        {
+          "key": "C",
+          "text": "等价于"
+        },
+        {
+          "key": "D",
+          "text": "逼近"
+        }
+      ],
+      "answer": "A",
+      "analysis": "f∈O(g) 表示 f 的阶不高于 g。"
+    },
+    {
+      "id": "choice-53",
+      "type": "choice",
+      "section": "选择题",
+      "number": 53,
+      "title": "选择题 53",
+      "prompt": "回溯法在解空间树 T 上的搜索方式是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "深度优先"
+        },
+        {
+          "key": "B",
+          "text": "广度优先"
+        },
+        {
+          "key": "C",
+          "text": "最小耗费优先"
+        },
+        {
+          "key": "D",
+          "text": "活结点优先"
+        }
+      ],
+      "answer": "A",
+      "analysis": "回溯法在解空间树上作深度优先搜索。"
+    },
+    {
+      "id": "choice-54",
+      "type": "choice",
+      "section": "选择题",
+      "number": 54,
+      "title": "选择题 54",
+      "prompt": "回溯算法和分支限界法的问题的解空间树不会是（ ）。",
+      "options": [
+        {
+          "key": "A",
+          "text": "有序树"
+        },
+        {
+          "key": "B",
+          "text": "子集树"
+        },
+        {
+          "key": "C",
+          "text": "排列树"
+        },
+        {
+          "key": "D",
+          "text": "无序树"
+        }
+      ],
+      "answer": "D",
+      "analysis": "解空间树通常是子集树、排列树等有序结构，不是无序树。"
+    },
+    {
+      "id": "blank-01",
+      "type": "fill",
+      "section": "填空题",
+      "number": 1,
+      "title": "算法五个重要特征",
+      "prompt": "算法的五个重要特征是：输入、输出、确定性、   、   。",
+      "answer": "有穷性；可行性",
+      "analysis": "算法五特性：输入、输出、确定性、有穷性、可行性。"
+    },
+    {
+      "id": "blank-02",
+      "type": "fill",
+      "section": "填空题",
+      "number": 2,
+      "title": "算法效率度量",
+      "prompt": "常见的算法效率度量方法有：   、   。",
+      "answer": "时间复杂度；空间复杂度",
+      "analysis": "算法效率主要从时间和空间两方面度量。"
+    },
+    {
+      "id": "blank-03",
+      "type": "fill",
+      "section": "填空题",
+      "number": 3,
+      "title": "递归基本要素",
+      "prompt": "递归算法的两个基本要素是：   、   。",
+      "answer": "递归出口/边界条件；递归方程/递推关系",
+      "analysis": "递归需有出口，且能缩小问题规模。"
+    },
+    {
+      "id": "blank-04",
+      "type": "fill",
+      "section": "填空题",
+      "number": 4,
+      "title": "分治法思想",
+      "prompt": "分治法的基本思想是将一个规模为 n 的问题分解为 k 个规模较小的子问题，这些子问题相互   且与原问题   。",
+      "answer": "独立；相同/同类型",
+      "analysis": "分治要求子问题相互独立、类型相同。"
+    },
+    {
+      "id": "blank-05",
+      "type": "fill",
+      "section": "填空题",
+      "number": 5,
+      "title": "动态规划性质",
+      "prompt": "动态规划算法通常用于求解具有   性质和   性质的最优化问题。",
+      "answer": "最优子结构；重叠子问题",
+      "analysis": "动态规划的两个基本要素。"
+    },
+    {
+      "id": "blank-06",
+      "type": "fill",
+      "section": "填空题",
+      "number": 6,
+      "title": "贪心算法性质",
+      "prompt": "贪心算法在每一步选择中都采取在当前状态下最好或最优的选择，从而希望导致全局最优解。贪心算法并不总能得到整体最优解，但对许多问题能产生整体最优解或近似最优解。贪心算法通常具有   和   两个重要性质。",
+      "answer": "贪心选择性质；最优子结构性质",
+      "analysis": "贪心算法的基本要素。"
+    },
+    {
+      "id": "blank-07",
+      "type": "fill",
+      "section": "填空题",
+      "number": 7,
+      "title": "回溯法搜索策略",
+      "prompt": "回溯法是一种搜索算法，它在问题的解空间树中，按   策略，从根结点出发搜索解空间树。",
+      "answer": "深度优先",
+      "analysis": "回溯法采用深度优先搜索。"
+    },
+    {
+      "id": "blank-08",
+      "type": "fill",
+      "section": "填空题",
+      "number": 8,
+      "title": "分支限界搜索方式",
+      "prompt": "分支限界法通常以   或   的方式搜索解空间树。",
+      "answer": "广度优先；最小耗费优先",
+      "analysis": "分支限界常用 FIFO（广度优先）或优先队列（最小耗费/最大效益优先）扩展活结点。"
+    },
+    {
+      "id": "blank-09",
+      "type": "code",
+      "section": "填空题",
+      "number": 9,
+      "title": "冒泡排序代码填空",
+      "prompt": "9.冒泡排序补全下列程序\nvoid BubbleSort(int a[], int n) {\n  for (int i = 0; i < n - 1; i++) {\n    for (int j = 0; j < n - 1 - i; j++) {\n      if (a[j] > a[j+1]) {\n        int temp = a[j];\n        ;\n        ;\n      }\n    }\n  }\n}",
+      "answer": "a[j] = a[j+1]；a[j+1] = temp",
+      "analysis": "交换相邻逆序元素：先赋值后移，再把 temp 赋给 a[j+1]。"
+    },
+    {
+      "id": "blank-10",
+      "type": "fill",
+      "section": "填空题",
+      "number": 10,
+      "title": "快速排序关键步骤",
+      "prompt": "快速排序的核心思想是分治，其关键步骤是   。",
+      "answer": "划分/Partition",
+      "analysis": "快排先 Partition 再递归左右区间。"
+    },
+    {
+      "id": "blank-11",
+      "type": "fill",
+      "section": "填空题",
+      "number": 11,
+      "title": "0-1背包DP性质",
+      "prompt": "0/1背包问题的动态规划解法中，子问题的最优解包含在原问题的最优解中，这种性质称为   。",
+      "answer": "最优子结构性质",
+      "analysis": "0-1 背包 DP 依赖最优子结构。"
+    },
+    {
+      "id": "blank-12",
+      "type": "fill",
+      "section": "填空题",
+      "number": 12,
+      "title": "哈夫曼编码",
+      "prompt": "在哈夫曼编码中，为了使平均码长最短，应让出现频率高的字符对应较   的编码。",
+      "answer": "短",
+      "analysis": "高频字符应分配更短码字。"
+    },
+    {
+      "id": "blank-13",
+      "type": "fill",
+      "section": "填空题",
+      "number": 13,
+      "title": "Dijkstra算法",
+      "prompt": "迪杰斯特拉(Dijkstra)算法用于求解   路径问题，它采用了   算法的思想。",
+      "answer": "单源最短；贪心",
+      "analysis": "Dijkstra 每次选当前距离最小的未确定顶点。"
+    },
+    {
+      "id": "blank-14",
+      "type": "fill",
+      "section": "填空题",
+      "number": 14,
+      "title": "最小生成树",
+      "prompt": "克鲁斯卡尔(Kruskal)算法和普里姆(Prim)算法都是求解   的贪心算法。",
+      "answer": "最小生成树",
+      "analysis": "Kruskal 和 Prim 都是 MST 经典算法。"
+    },
+    {
+      "id": "blank-15",
+      "type": "fill",
+      "section": "填空题",
+      "number": 15,
+      "title": "最长公共子序列",
+      "prompt": "最长公共子序列(LCS)问题通常采用   算法求解。",
+      "answer": "动态规划",
+      "analysis": "LCS 是动态规划经典问题。"
+    },
+    {
+      "id": "blank-16",
+      "type": "fill",
+      "section": "填空题",
+      "number": 16,
+      "title": "矩阵连乘递推式",
+      "prompt": "矩阵连乘问题中，计算最优值时采用的递归式为：m[i][j] =   。",
+      "answer": "min{m[i][k]+m[k][j]}+p[i-1]*p[k]*p[j]（i≤k<j）",
+      "analysis": "在 i 与 j 之间枚举分割点 k，取交叉相乘代价最小值。"
+    },
+    {
+      "id": "blank-17",
+      "type": "fill",
+      "section": "填空题",
+      "number": 17,
+      "title": "N皇后问题",
+      "prompt": "N皇后问题是典型的   搜索算法的应用。",
+      "answer": "回溯",
+      "analysis": "N 皇后用回溯在解空间树中搜索。"
+    },
+    {
+      "id": "blank-18",
+      "type": "fill",
+      "section": "填空题",
+      "number": 18,
+      "title": "解空间树类型",
+      "prompt": "搜索空间树的两种基本类型是   和   。",
+      "answer": "子集树；排列树",
+      "analysis": "子集树对应选/不选，排列树对应全排列。"
+    },
+    {
+      "id": "blank-19",
+      "type": "fill",
+      "section": "填空题",
+      "number": 19,
+      "title": "剪枝函数",
+      "prompt": "在回溯法与分支限界法中，常用的两类剪枝函数为   和   。",
+      "answer": "约束函数；限界函数",
+      "analysis": "约束函数剪去不可行解，限界函数剪去不可能更优的解。"
+    },
+    {
+      "id": "blank-20",
+      "type": "fill",
+      "section": "填空题",
+      "number": 20,
+      "title": "蒙特卡罗算法",
+      "prompt": "蒙特卡罗算法是一种   算法，它得到的解不一定正确，但随着计算时间的增加，得到正确解的概率会   。",
+      "answer": "随机；提高/增大",
+      "analysis": "蒙特卡罗通过随机采样，时间越长结果越可靠。"
+    },
+    {
+      "id": "blank-21",
+      "type": "fill",
+      "section": "填空题",
+      "number": 21,
+      "title": "填空题 21",
+      "prompt": "以广度优先或以最小耗费方式搜索问题解的算法称为   。",
+      "answer": "分支限界法",
+      "analysis": "可用广度优先或最小耗费优先。"
+    },
+    {
+      "id": "blank-22",
+      "type": "fill",
+      "section": "填空题",
+      "number": 22,
+      "title": "填空题 22",
+      "prompt": "   是贪心算法可行的第一个基本要素，也是贪心算法与动态规划算法的主要区别。",
+      "answer": "贪心选择性质",
+      "analysis": "同第14题。"
+    },
+    {
+      "id": "blank-23",
+      "type": "fill",
+      "section": "填空题",
+      "number": 23,
+      "title": "填空题 23",
+      "prompt": "快速排序算法是基于   的一种排序算法。",
+      "answer": "分治法",
+      "analysis": "快速排序按基准划分后递归排序。"
+    },
+    {
+      "id": "blank-24",
+      "type": "fill",
+      "section": "填空题",
+      "number": 24,
+      "title": "填空题 24",
+      "prompt": "动态规划算法的两个基本要素是   性质和   性质。",
+      "answer": "最优子结构；重叠子问题",
+      "analysis": "动态规划的两个基本要素。"
+    },
+    {
+      "id": "blank-25",
+      "type": "fill",
+      "section": "填空题",
+      "number": 25,
+      "title": "填空题 25",
+      "prompt": "快速排序算法的性能取决于   。",
+      "answer": "划分是否均衡/基准元素选择",
+      "analysis": "同第16题。"
+    },
+    {
+      "id": "blank-26",
+      "type": "fill",
+      "section": "填空题",
+      "number": 26,
+      "title": "填空题 26",
+      "prompt": "分支限界法主要有   和   两种组织活结点表的方式。",
+      "answer": "队列式；优先队列式",
+      "analysis": "对应 FIFO 式与优先队列式（最小耗费/最大效益）分支限界。"
+    },
+    {
+      "id": "blank-27",
+      "type": "fill",
+      "section": "填空题",
+      "number": 27,
+      "title": "填空题 27",
+      "prompt": "任何可用计算机求解的问题所需的时间都与其   有关。",
+      "answer": "规模",
+      "analysis": "输入规模 n 决定所需时间的增长。"
+    },
+    {
+      "id": "blank-28",
+      "type": "fill",
+      "section": "填空题",
+      "number": 28,
+      "title": "填空题 28",
+      "prompt": "回溯法搜索解空间树时，常用的两种剪枝函数为   和   。",
+      "answer": "约束函数；限界函数",
+      "analysis": "约束剪不可行解，限界剪不可能更优的解。"
+    },
+    {
+      "id": "code-01",
+      "type": "code",
+      "section": "算法填空",
+      "number": 1,
+      "title": "1. 背包问题的贪心算法",
+      "prompt": "1.背包问题的贪心算法\nvoid Knapsack(int n,float M,float v[],float w[],float x[]){\n  sort(n,v,w);\n  int i;\n  for (i=1;i<=n;i++) x[i]=0;\n  float c=M;\n  for (i=1;i<=n;i++) {\n    if (w[i]>c) break;\n    x[i]=1;\n      ;\n  }\n             ;\n}",
+      "answer": "c -= w[i]；if (i <= n) x[i] = c / w[i]",
+      "analysis": "先按单位价值排序，能整件装就装，最后一件只能装剩余比例。这是分数背包，不是 0/1 背包。"
+    },
+    {
+      "id": "code-02",
+      "type": "code",
+      "section": "算法填空",
+      "number": 2,
+      "title": "2. 最大子段和动态规划",
+      "prompt": "2.最大子段和: 动态规划算法\nint MaxSum(int n, int a[]){\n    int sum=0, b=0； //sum存储当前最大的b[j], b存储b[j]\n    for(int j=1； j<=n； j++) {\n if (b>0) b+= a[j] ；\n          //一旦某个区段和为负，则从下一个位置累和\n if(b>sum)\n   }\n   return sum；\n}",
+      "answer": "else b=a[j]；sum=b",
+      "analysis": "完整写法：if(b>0) b+=a[j]; else b=a[j]; if(b>sum) sum=b。b 表示以 a[j] 结尾的最大子段和。"
+    },
+    {
+      "id": "code-03",
+      "type": "code",
+      "section": "算法填空",
+      "number": 3,
+      "title": "3. 快速排序",
+      "prompt": "3.快速排序\ntemplate<class Type>\nvoid QuickSort (Type a[], int p, int r){\n   if (p<r) {\n    int q=Partition(a,p,r);\n                //对左半段排序\n                //对右半段排序\n   }\n}",
+      "answer": "QuickSort(a, p, q-1)；QuickSort(a, q+1, r)",
+      "analysis": "Partition 后基准在 q，左右分别递归排序。"
+    },
+    {
+      "id": "code-04",
+      "type": "code",
+      "section": "算法填空",
+      "number": 4,
+      "title": "4. 排列问题",
+      "prompt": "4.排列问题\nTemplate <class Type>\nvoid perm(Type list[], int k, int m ){ //产生[list[k:m]的所有排列\n           { //只剩下一个元素\n    for (int i=0;i<=m;i++) cout<<list[i];\n    cout<<endl;\n  }\n  else //还有多个元素待排列，递归产生排列\n    for (          ){\n   swap(list[k]，list[i]);\n\n        swap(list[k],list[i]);\n    }\n}",
+      "answer": "if(k==m)；for(int i=k,i<=m,i++)",
+      "analysis": "if(k==m) 输出排列；else for(i=k;i<=m;i++) { swap; perm(k+1); swap back; }"
+    },
+    {
+      "id": "code-05",
+      "type": "code",
+      "section": "算法填空",
+      "number": 5,
+      "title": "5. 二分搜索",
+      "prompt": "5.给定已按升序排好序的n个元素a[0:n-1]，现要在这n个元素中找出一特定元素x。\n据此容易设计出二分搜索算法：\ntemplate<class Type>\nint BinarySearch(Type a[], const Type& x, int l, int r){\n  while ( l<r  ){\n    int m =  (l+r)/2        ;\n    if (x == a[m]) return m;\n    if (  x<a[m]  ) r = m-1;\n    else l = m+1;\n  }\n  return -1;\n}",
+      "answer": "while(l<=r)；m=(l+r)/2",
+      "analysis": "标准写法用 while(l<=r) 避免漏查；每次取中点比较后缩小区间，复杂度 O(log n)。"
+    },
+    {
+      "id": "code-06",
+      "type": "code",
+      "section": "算法填空",
+      "number": 6,
+      "title": "6. 合并排序",
+      "prompt": "6、合并排序描述如下：\ntemplate<class Type>\nvoid Mergesort(Type a[ ], int left, int right){\n  if (        ){\n    int i=(          )/2;\n    Mergesort(a, left, i );\n    Mergesort(           );\n    Merge(a,b, left,i,right);//合并到数组b\n    Copy(a,b, left,right ); //复制到数组a\n  }\n}",
+      "answer": "left < right；left + right；a, i+1, right",
+      "analysis": "分成左右两半递归排序，再 Merge 合并，复杂度 O(nlogn)。"
+    },
+    {
+      "id": "code-07",
+      "type": "code",
+      "section": "算法填空",
+      "number": 7,
+      "title": "7. 计算 x^m",
+      "prompt": "7、以下是计算xm的值的过程\nint power ( x, m ){//计算xm的值并返回。\n   y=(     ); i=m;\n   while(i-->0)\n     y=y*x;\n    (          )\n}",
+      "answer": "1；return y",
+      "analysis": "循环 m 次乘 x，时间复杂度 O(m)。若用快速幂可降为 O(log m)。"
+    },
+    {
+      "id": "qa-01",
+      "type": "short",
+      "section": "问答题",
+      "number": 1,
+      "title": "算法定义",
+      "prompt": "算法定义",
+      "answer": "算法是求解某类问题的有穷规则或有限步骤序列；对合法输入，能在有限时间内得到输出。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-02",
+      "type": "short",
+      "section": "问答题",
+      "number": 2,
+      "title": "算法的5个特性",
+      "prompt": "写出算法的5个特性以及所含的含义",
+      "answer": "输入：0个或多个输入；输出：至少1个输出；确定性：步骤清楚无歧义；有限性：有限步后结束；可行性：每一步都能实际执行。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-03",
+      "type": "short",
+      "section": "问答题",
+      "number": 3,
+      "title": "最大公约数算法",
+      "prompt": "设计求最大公约数的算法（用自然语言或伪代码表示）",
+      "answer": "欧几里得算法：输入 a,b；当 b≠0 时令 r=a mod b, a=b, b=r；循环结束后 a 即 gcd。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-04",
+      "type": "short",
+      "section": "问答题",
+      "number": 4,
+      "title": "好算法特性",
+      "prompt": "“好”算法除了满足算法的基本特性以外，还应具备的特性有：",
+      "answer": "正确性、可读性、健壮性、时间效率高、空间占用少。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-05",
+      "type": "short",
+      "section": "问答题",
+      "number": 5,
+      "title": "计算机求解问题的一般过程",
+      "prompt": "用计算机求解问题的一般过程：",
+      "answer": "理解问题，建立模型，设计算法，证明正确性，分析复杂性，编程实现，测试调试。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-06",
+      "type": "short",
+      "section": "问答题",
+      "number": 6,
+      "title": "算法复杂性",
+      "prompt": "请叙述算法复杂性、时间复杂性、空间复杂性的含义？写出最好、最坏、平均时间复杂性的定义。",
+      "answer": "算法复杂性是算法消耗资源的量；时间复杂性记运行时间 T(n)，空间复杂性记额外空间 S(n)。最好是同规模输入中最小时间，最坏是最大时间，平均是按输入概率加权的平均时间。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-07",
+      "type": "short",
+      "section": "问答题",
+      "number": 7,
+      "title": "复杂性分析目的",
+      "prompt": "请叙述算法复杂性分析的目的。",
+      "answer": "估计算法随规模增长的效率，比较算法优劣，判断算法是否可行。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-08",
+      "type": "short",
+      "section": "问答题",
+      "number": 8,
+      "title": "冒泡排序复杂性",
+      "prompt": "针对n个元素的冒泡排序分别就元素比较与元素移动分析时间复杂性。",
+      "answer": "比较次数通常为 O(n^2)。若有提前结束标志，最好 O(n)、移动 O(1) 或 O(n)；最坏逆序时比较和移动均 O(n^2)；平均 O(n^2)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-09",
+      "type": "short",
+      "section": "问答题",
+      "number": 9,
+      "title": "复杂性符号",
+      "prompt": "写出复杂性符号及其意义：O(f)，Ω(f)，Θ(f)。",
+      "answer": "O(f) 表示渐近上界；Ω(f) 表示渐近下界；Θ(f) 表示同阶紧界，即同时属于 O(f) 和 Ω(f)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-10",
+      "type": "short",
+      "section": "问答题",
+      "number": 10,
+      "title": "非递归与递归复杂性分析",
+      "prompt": "针对非递归程序、递归程序叙述复杂性分析基本方法",
+      "answer": "非递归看循环层数和基本语句执行次数；递归先列递推式 T(n)，再用展开法、递归树或主定理求解。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-11",
+      "type": "short",
+      "section": "问答题",
+      "number": 11,
+      "title": "常用算法设计技术",
+      "prompt": "算法设计与分析经常采用的算法有哪些",
+      "answer": "递推、蛮力、分治、动态规划、贪心、回溯、分支限界。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-12",
+      "type": "short",
+      "section": "问答题",
+      "number": 12,
+      "title": "递推法与蛮力法",
+      "prompt": "分别给出递推法、蛮力法的含义",
+      "answer": "递推法由初值和递推关系逐步推出结果；蛮力法枚举所有可能解并逐个检验。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-13",
+      "type": "short",
+      "section": "问答题",
+      "number": 13,
+      "title": "递推算法三项工作",
+      "prompt": "利用递推算法解决问题，需要做好哪三个方面的工作：",
+      "answer": "确定状态含义，给出初始条件，建立递推关系和计算顺序。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-14",
+      "type": "short",
+      "section": "问答题",
+      "number": 14,
+      "title": "凸 n 边形三角剖分",
+      "prompt": "请建立凸n边形的三角剖分递推式h(n)，并给出计算h(n)的程序",
+      "answer": "三角剖分数满足 h(2)=1，h(n)=Σ h(i)h(n-i+1)，本质是 Catalan 型递推；考试写清初值、循环求表即可。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-15",
+      "type": "short",
+      "section": "问答题",
+      "number": 15,
+      "title": "计算 a^n mod m",
+      "prompt": "给定正整数a，m，对非负整数n，用递推法/蛮力法计算an被m除的余数，分析算法复杂性。",
+      "answer": "递推/蛮力：res=1，循环 n 次 res=res*a mod m，时间 O(n)。可写快速幂：每次平方并按二进制位相乘，时间 O(logn)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-16",
+      "type": "short",
+      "section": "问答题",
+      "number": 16,
+      "title": "百元买百鸡",
+      "prompt": "百元买百鸡问题“已知公鸡 5 元一只，母鸡 3 元一只，小鸡 1 元三只，用 100 元钱买 100 只鸡，问公鸡、母鸡、小鸡各多少只？”请设计算法求出公鸡、母鸡、小鸡的只数（至少1只），分析算法复杂性。",
+      "answer": "枚举公鸡 x、母鸡 y，小鸡 z=100-x-y，满足 5x+3y+z/3=100 且 z%3=0。双重循环时间 O(100^2)，常数规模。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-17",
+      "type": "short",
+      "section": "问答题",
+      "number": 17,
+      "title": "蛮力串匹配",
+      "prompt": "给定两个字符串S和T，在S中查找是否有子串T，请给出一个蛮力法算法，并说明算法复杂性。",
+      "answer": "对 S 的每个起点 i，逐字符比较 T；若全匹配则成功。最坏时间 O((n-m+1)m)，约 O(nm)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-18",
+      "type": "short",
+      "section": "问答题",
+      "number": 18,
+      "title": "最近点对蛮力法",
+      "prompt": "请叙述平面最近点对问题，并说明其蛮力法的算法复杂性。",
+      "answer": "给定平面 n 个点，求欧氏距离最近的一对；蛮力检查所有点对，时间 O(n^2)，空间 O(1)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-19",
+      "type": "short",
+      "section": "问答题",
+      "number": 19,
+      "title": "分治法思想",
+      "prompt": "分治法的基本思想是：",
+      "answer": "把原问题分成若干规模较小、相互独立且同类型的子问题，递归求解后合并得到原问题解。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-20",
+      "type": "short",
+      "section": "问答题",
+      "number": 20,
+      "title": "分治适用特征",
+      "prompt": "分治法所能解决的问题一般具有哪几个特征：",
+      "answer": "小规模易解；可分成同类子问题；子问题相互独立；子问题解能合并成原问题解。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-21",
+      "type": "short",
+      "section": "问答题",
+      "number": 21,
+      "title": "分治基本步骤",
+      "prompt": "写出分治法的基本步骤",
+      "answer": "Divide 分解，Conquer 递归求解，Combine 合并。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-22",
+      "type": "short",
+      "section": "问答题",
+      "number": 22,
+      "title": "归并排序",
+      "prompt": "叙述n个数的归并排序算法的思想，并讨论它的算法复杂性",
+      "answer": "把数组分成两半分别排序，再线性合并；递推式 T(n)=2T(n/2)+O(n)，解为 O(nlogn)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-23",
+      "type": "short",
+      "section": "问答题",
+      "number": 23,
+      "title": "快速排序",
+      "prompt": "叙述快速排序的基本思想，写出最坏与最好的复杂性。",
+      "answer": "选基准，把小于基准的放左边、大于的放右边，再递归两边；最好 O(nlogn)，最坏 O(n^2)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-24",
+      "type": "short",
+      "section": "问答题",
+      "number": 24,
+      "title": "动态规划思想",
+      "prompt": "叙述动态规划的基本思想",
+      "answer": "把问题分成重叠子问题，保存子问题最优值，自底向上或备忘录求解，避免重复计算。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-25",
+      "type": "short",
+      "section": "问答题",
+      "number": 25,
+      "title": "动态规划步骤",
+      "prompt": "写出动态规划算法的基本步骤",
+      "answer": "刻画最优解结构；定义状态；写递推方程和边界；按顺序计算最优值；必要时构造最优解。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-26",
+      "type": "short",
+      "section": "问答题",
+      "number": 26,
+      "title": "分治与动态规划异同",
+      "prompt": "分治法与动态规划法的相同点与不同点",
+      "answer": "相同：都分解成子问题。不同：分治子问题通常独立，动态规划子问题重叠并保存结果；分治多递归，动态规划多填表。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-27",
+      "type": "short",
+      "section": "问答题",
+      "number": 27,
+      "title": "贪心算法",
+      "prompt": "何为贪心算法？",
+      "answer": "每一步都作当前看来最优的选择，并希望由局部最优得到全局最优。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-28",
+      "type": "short",
+      "section": "问答题",
+      "number": 28,
+      "title": "动态规划与贪心异同",
+      "prompt": "叙述动态规划与贪心法的异同",
+      "answer": "相同：都需最优子结构。不同：贪心还需贪心选择性质，不回头；动态规划会比较多个子问题选择。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-29",
+      "type": "short",
+      "section": "问答题",
+      "number": 29,
+      "title": "深度优先搜索",
+      "prompt": "叙述深度优先搜索",
+      "answer": "沿一条分支尽量深入，走不通再回退搜索其他分支，常用栈或递归实现。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-30",
+      "type": "short",
+      "section": "问答题",
+      "number": 30,
+      "title": "回溯两类解空间树",
+      "prompt": "回溯法中常见的两类典型的解空间树是什么？",
+      "answer": "子集树：每个元素选或不选；排列树：对元素排列顺序进行搜索。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-31",
+      "type": "short",
+      "section": "问答题",
+      "number": 31,
+      "title": "回溯法思想",
+      "prompt": "叙述回溯法的思想，并给出子集树与排列树的算法框架。",
+      "answer": "在解空间树中深度优先搜索；每到结点先判断约束和限界，不可能得到解或更优解就剪枝。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-32",
+      "type": "short",
+      "section": "问答题",
+      "number": 32,
+      "title": "子集树框架",
+      "prompt": "写出回溯法中子集树的算法框架。",
+      "answer": "Backtrack(t)：若 t>n 输出/更新；否则枚举 x[t] 的取值，满足约束和限界则递归 Backtrack(t+1)。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-33",
+      "type": "short",
+      "section": "问答题",
+      "number": 33,
+      "title": "排列树框架",
+      "prompt": "写出回溯法中排列树的算法框架。",
+      "answer": "Backtrack(t)：若 t>n 输出/更新；否则 for i=t..n 交换第 t 位与第 i 位，满足条件则递归，再交换回来。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-34",
+      "type": "short",
+      "section": "问答题",
+      "number": 34,
+      "title": "广度优先搜索",
+      "prompt": "叙述广度优先搜索法的算法思想",
+      "answer": "从根开始按层扩展结点，先生成的结点先扩展，常用队列实现。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-35",
+      "type": "short",
+      "section": "问答题",
+      "number": 35,
+      "title": "A*算法",
+      "prompt": "叙述A*算法的设计思想及估计函数表示中各有关函数的含义",
+      "answer": "用 f(n)=g(n)+h(n) 作为优先级；g(n) 是从初始状态到 n 的实际代价，h(n) 是 n 到目标的估计代价；优先扩展 f 小的结点。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-36",
+      "type": "short",
+      "section": "问答题",
+      "number": 36,
+      "title": "分支限界法思想",
+      "prompt": "叙述分支限界法思想：",
+      "answer": "按广度优先或优先队列方式扩展活结点，用限界函数判断某分支是否可能得到更优解，不能则剪去。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-37",
+      "type": "short",
+      "section": "问答题",
+      "number": 37,
+      "title": "分支限界法与回溯法相同点",
+      "prompt": "叙述分支限界法与回溯法的相同点",
+      "answer": "都搜索解空间树，都用约束/限界剪枝，都可求组合优化问题。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-38",
+      "type": "short",
+      "section": "问答题",
+      "number": 38,
+      "title": "分支限界法设计步骤",
+      "prompt": "叙述用分支限界法设计算法的步骤",
+      "answer": "确定解空间树；设计约束函数和限界函数；选择活结点表组织方式；不断取扩展结点、生成孩子、剪枝并更新最优解。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "qa-39",
+      "type": "short",
+      "section": "问答题",
+      "number": 39,
+      "title": "分支限界法搜索策略",
+      "prompt": "叙述分支限界法的搜索策略",
+      "answer": "队列式按 FIFO 广度优先；优先队列式按最小耗费或最大效益优先。",
+      "analysis": "抓住关键词，考试按“定义/步骤/复杂度/区别”分点写。"
+    },
+    {
+      "id": "design-01",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 1,
+      "title": "最长公共子序列 LCS",
+      "prompt": "用动态规划策略求解最长公共子序列问题：\n（1）给出计算最优值的递归方程。\n（2）给定两个序列X={B,C,D,A}，Y={A,B,C,B}，请采用动态规划策略求出其最长公共子序列，要求给出过程。",
+      "answer": "递推方程：c[i][0]=c[0][j]=0；若 xi=yj，则 c[i][j]=c[i-1][j-1]+1；否则 c[i][j]=max(c[i-1][j],c[i][j-1])。\nX={B,C,D,A}, Y={A,B,C,B} 的一个最长公共子序列是 {B,C}，长度为 2。写过程时画 4×4 表，按行填 c 值并从右下角回溯。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-02",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 2,
+      "title": "函数阶比较",
+      "prompt": "对下列各组函数 f(n) 和 g(n)，确定 f(n)=O(g(n)) 或 f(n)=Ω(g(n)) 或 f(n)=Θ(g(n))，并简要说明理由。\n(1) f(n)=2^n；g(n)=n!\n(2) f(n)=sqrt(n)=n^(1/2)；g(n)=log(n^2)\n(3) f(n)=100；g(n)=log(100)\n(4) f(n)=n^3；g(n)=3^n\n(5) f(n)=3^n；g(n)=2^n",
+      "answer": "(1) 2^n=O(n!)，指数增长慢于阶乘。\n(2) sqrt(n)=Ω(log n)，且不是 O(log n)。\n(3) 100 与 log100 均为常数，故 Θ(1)。\n(4) n^3=O(3^n)，多项式慢于指数。\n(5) 3^n=Ω(2^n)，且不是 O(2^n)。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-03",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 3,
+      "title": "Kruskal 最小生成树",
+      "prompt": "对下图所示的连通网络G，用克鲁斯卡尔(Kruskal)算法求G的最小生成树T,请写出在算法执行过程中，依次加入T的边集TE中的边。说明该算法的贪心策略和算法的基本思想，并简要分析算法的时间复杂度。",
+      "answer": "按边权从小到大选且不成环： (3,4,6)、(2,3,7)、跳过(2,4,9)、(1,5,11)、(4,6,15)、(4,5,17)。\n得到 TE={(3,4),(2,3),(1,5),(4,6),(4,5)}，总权值 56。\n贪心策略：每次选当前不成环的最小边。排序主导，常见复杂度 O(eloge)。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": "assets/image1.png"
+    },
+    {
+      "id": "design-04",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 4,
+      "title": "递归归并排序复杂性",
+      "prompt": "请用分治策略设计递归的归并排序算法，并分析其时间复杂性（要求：分别给出divide、conquer、combine这三个阶段所花的时间，并在此基础上列出递归方程，最后用套用公式法求出其解的渐进阶）。",
+      "answer": "divide：求中点 O(1)；conquer：递归两个 n/2 子问题；combine：合并 O(n)。\n递推式 T(n)=2T(n/2)+O(n)，由主定理得 T(n)=O(nlogn)。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-05",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 5,
+      "title": "8人循环赛日程表",
+      "prompt": "设有n=2k个运动员要进行循环赛,现设计一个满足以下要求的比赛日程表:\n每个选手必须与其他n-1名选手比赛各一次;每个选手一天至多只能赛一次; 循环赛要在最短时间内完成.\n(1)循环赛最少需要进行( n-1 )天.\n(2)当n=23=8时,请画出循环赛日程表:\n1 2 3 4 5 6 7",
+      "answer": "最少 n-1=7 天。原文图片中的 8×8 表可直接作为答案：第 i 行表示第 i 位运动员每天的对手，主对角线为自己不赛。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": "assets/image2.jpeg"
+    },
+    {
+      "id": "design-06",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 6,
+      "title": "哈夫曼编码",
+      "prompt": "考虑用哈夫曼算法来找字符a,b,c,d,e,f 的最优编码。这些字符出现在文件中 的频数之比为 20:10:6:4:44:16。要求：\n（1）简述使用哈夫曼算法构造最优编码的基本步骤；\n（2）构造对应的哈夫曼树，并据此给出a,b,c,d,e,f 的一种最优编码。\n（3）再字符a,b,c,d,e,f,g,h,i 出现的频数 3 5 6 7 7 14 20 43 56，画出对应的哈夫曼树，并据此给出a,b,c,d,e,f,g,h,i 的一种最优编码。",
+      "answer": "步骤：把每个字符作为权为频数的叶子；每次取两个最小权结点合并；重复到只剩一棵树；左0右1得到编码。\na,b,c,d,e,f 频数 20,10,6,4,44,16 的一种编码：e:0，b:100，d:1010，c:1011，f:110，a:111。等价左右互换也正确。\na..i 频数 3,5,6,7,7,14,20,43,56 的一种编码：c:0000，d:0001，f:001，e:0100，a:01010，b:01011，g:011，h:10，i:11。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-07",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 7,
+      "title": "最大最小元素问题",
+      "prompt": "最大最小元素问题。考虑在序列A[1..n]中找最大最小元素的问题。",
+      "answer": "蛮力法：分别扫描求 max 和 min，约 2n 次比较，O(n)。\n分治法：一分为二分别求最大最小，再合并比较两次，T(n)=2T(n/2)+O(1)，O(n)。\n更优成对比较：每两元素先比较，再分别与 max/min 比较，约 3n/2 次比较。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-08",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 8,
+      "title": "0-1背包动态规划",
+      "prompt": "考虑使用动态规划方法求解下列问题：\n0-1背包数据如下表，求：能够放入背包的最有价值的物品集合。\n如设： V(i, j) 为前 i 个物品中能够装入承重量 j 的背包中的最大总价值。请将如下递推式填写完整：\nV(0, j) = 0           （0个物品），\nV(i, 0) = 0（承重量0）\nV(i, j) = V(i-1, j)    如果第 i 个物品不能装入，j < wi （超重）,\nV(i, j) =max{              ,                 ) 如 j > wi （不超重）\n            i在最优子集中      i不在最优子集中\n自底向上：按行或列填写下表。",
+      "answer": "递推式：若 j<wi，V(i,j)=V(i-1,j)；若 j>=wi，V(i,j)=max{V(i-1,j), V(i-1,j-wi)+vi}。\n题图只给出待填 DP 表，未给具体 wi、vi；考试若给数据，就从 i=1、j=1 开始按上式逐格填表，最后 V(n,C) 为最优值，再逆推选中物品。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": "assets/image3.jpeg"
+    },
+    {
+      "id": "design-09",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 9,
+      "title": "4皇后与 n 皇后约束",
+      "prompt": "请画出用回溯法解 4 皇后问题的解空间树和搜索空间树。\n\n写出 n 皇后问题的约束条件，并画出 4 皇后问题的搜索树。",
+      "answer": "n 皇后约束：第 i 行皇后放在第 x[i] 列，需满足 ① 不同行（每行一个） ② x[i]≠x[j]（不同列） ③ |i−j|≠|x[i]−x[j]|（不同对角线）。\n4 皇后两个解：(2,4,1,3) 与 (3,1,4,2)。\n解空间树：4 层、每层最多 4 分支（按行选列）；搜索空间树：DFS 回溯，冲突即剪枝。详见下方图解。",
+      "analysis": "解空间树展示全部可能扩展；搜索空间树只保留实际探索且未剪枝的路径。查看答案后可看到三幅示意图。",
+      "image": null
+    },
+    {
+      "id": "design-10",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 10,
+      "title": "分支限界法解0-1背包示例",
+      "prompt": "考虑用分支限界法解0-1背包问题\n给定n种物品和一背包。物品i的重量是wi，其价值为vi，背包的容量为C。问应如何选择装入背包的物品，使得装入背包中物品的总价值最大?\n示例：n=3, C=30, w={16, 15, 15}, v={45, 25, 25}\n求：1、问题的解空间树，2、约束条件  3、如何剪枝？",
+      "answer": "解空间树：第 i 层决定第 i 个物品取1或取0，是子集树。\n约束条件：当前重量 cw<=C。\n剪枝：若超重则剪；若当前价值 cp+剩余价值上界 <= bestp，也剪。\n例 n=3,C=30,w={16,15,15},v={45,25,25}：最优选物品1和2或1和3，重量31超重，所以不能；选2和3重量30价值50；选1价值45，故最优为物品2、3，价值50。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": "assets/image3.jpeg"
+    },
+    {
+      "id": "design-11",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 11,
+      "title": "回溯法解0-1背包示例",
+      "prompt": "请画出用回溯法解n=3的0-1背包问题的解空间树和当三个物品的重量为{20, 15, 10}，价值为{20, 30, 25}，背包容量为25时搜索空间树。",
+      "answer": "解空间树为三层子集树，每层取 xi=1 或 0。\nw={20,15,10}, v={20,30,25}, C=25：可行较优解为选物品2和3，重量25，价值55，是最优解。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": "assets/image3.jpeg"
+    },
+    {
+      "id": "design-12",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 12,
+      "title": "最大子段和分治算法",
+      "prompt": "最大子段和问题：给定一个有n（n≥1）个整数的序列a[1..n]，要求出其中最大连续子序列的和。规定一个序列最大连续子序列和至少是0（长度为0的子序列），如果小于0，其结果为0。\n设计该问题的分治算法，并分析算法复杂性。",
+      "answer": "把区间分成左右两半，最大子段和要么在左半，要么在右半，要么跨越中点。分别递归求左右最大，再线性求跨中点最大，取三者最大。\n递推式 T(n)=2T(n/2)+O(n)，复杂度 O(nlogn)。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-13",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 13,
+      "title": "编辑距离动态规划",
+      "prompt": "写出编辑距离问题的动态规划方程，要求作必要的分析（允许使用删除、插入、替换三种操作）。",
+      "answer": "设 d[i][j] 为 A[1..i] 到 B[1..j] 的最小编辑次数。边界 d[i][0]=i，d[0][j]=j。\n若 A[i]=B[j]，d[i][j]=d[i-1][j-1]；否则 d[i][j]=1+min{d[i-1][j] 删除, d[i][j-1] 插入, d[i-1][j-1] 替换}。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-14",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 14,
+      "title": "数塔问题",
+      "prompt": "对数塔问题的算法进行简要分析，写出程序。",
+      "answer": "从倒数第二层向上递推：dp[i][j]=a[i][j]+max(dp[i+1][j],dp[i+1][j+1])；最后 dp[1][1] 为最大路径和。时间 O(n^2)，空间可用一维数组优化。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-15",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 15,
+      "title": "子集树或排列树判断",
+      "prompt": "分别写出最大最小问题蛮力法、递归算法、分治法。\n画出以下问题的子集树或排列树\n（1）3个物品的0-1背包问题；有两艘船总载重量c的3个集装箱（仅有重量）的装载问题。\n（2）4城市的旅行商问题\n（3）对下图用3种颜色做顶点着色，使得相邻顶点不同色\n（4）4个人4个任务的任务安排问题；4男4女运动员最佳搭配问题（每对男女运动员搭配有一个成绩评估值pij）\n（5）4皇后问题\n（6）批处理作业调度问题",
+      "answer": "0-1背包、装载问题：子集树。\n4城市旅行商、4人4任务、男女最佳搭配、批处理作业调度：排列树。\n图 m 着色、n 皇后：通常按每个顶点/每行选择颜色或列，也可看作状态树；考试常把图着色写成 m 叉树，n 皇后写成排列树加约束。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    },
+    {
+      "id": "design-16",
+      "type": "design",
+      "section": "算法设计与分析题",
+      "number": 16,
+      "title": "程序段时间复杂性",
+      "prompt": "分析下面程序段的时间复杂性\n（1）int i=1;\nfor(i=1; i<n;i++){\ncout<<i<<' ';\ni=i*2;\n}\n（2）for(int i=1;i<=n;i++){\nint j=1;\nwhile(j<=n){\nj=j*2;\n}\n}\n（3）for(int i=1;i<=n;i++){\nfor(int j=i;j<=n;j++){\nfor(int k=j;k<=n;k++){\ncout<<i+j+k<<' ';\n}\ncout<<endl;\n}\n（4）int n =20;\ncin>>n;\nint*a =new int[n],j;\nfor(int i=1;i<=n;i++){\nj=i;\nj++;\n}\n（5）\nint sum(int m,int n){\nint sum1 = 0 ;\nint sum2 = 0 ;\nfor(int i=0;i<=m;i++){\nsum1+=i;\n}\nfor(int j=1;j<=n;j++){\nsum2+=j;\n}\nreturn sum1+sum2;\n}",
+      "answer": "(1) i 每轮先乘2再被 for 的 i++ 加1，仍按指数增长，O(logn)。\n(2) 外层 n 次，内层 j 翻倍到 n，O(nlogn)。\n(3) 三重递增循环，总次数为三次组合量级，O(n^3)。\n(4) 单循环 n 次，O(n)。\n(5) 两个独立循环，O(m+n)。",
+      "analysis": "先写算法思想，再写递推式/步骤，最后补复杂度。",
+      "image": null
+    }
+  ]
+};
+
+</script>
+<script>
+const DEFAULT_BANK = window.QUESTION_BANK || { meta: {}, questions: [] };
+const STORAGE_KEY = "algorithm-review-quiz-v1";
+const BANK_STORAGE_KEY = "algorithm-review-quiz-bank-v1";
+let bank = loadQuestionBank();
+let questions = bank.questions || [];
+
+const els = {
+  modeTabs: Array.from(document.querySelectorAll(".mode-tab")),
+  sectionFilter: document.querySelector("#sectionFilter"),
+  statusFilter: document.querySelector("#statusFilter"),
+  searchInput: document.querySelector("#searchInput"),
+  restartBtn: document.querySelector("#restartBtn"),
+  importFile: document.querySelector("#importFile"),
+  restoreBankBtn: document.querySelector("#restoreBankBtn"),
+  importHint: document.querySelector("#importHint"),
+  mobileMenuBtn: document.querySelector("#mobileMenuBtn"),
+  drawerOverlay: document.querySelector("#drawerOverlay"),
+  questionNav: document.querySelector("#questionNav"),
+  pageTitle: document.querySelector("#pageTitle"),
+  sourceText: document.querySelector("#sourceText"),
+  typeBadge: document.querySelector("#typeBadge"),
+  progressText: document.querySelector("#progressText"),
+  progressBar: document.querySelector("#progressBar"),
+  questionTitle: document.querySelector("#questionTitle"),
+  questionCard: document.querySelector(".question-card"),
+  questionPrompt: document.querySelector("#questionPrompt"),
+  questionImage: document.querySelector("#questionImage"),
+  choiceArea: document.querySelector("#choiceArea"),
+  fillArea: document.querySelector("#fillArea"),
+  fillInput: document.querySelector("#fillInput"),
+  submitFillBtn: document.querySelector("#submitFillBtn"),
+  subjectiveArea: document.querySelector("#subjectiveArea"),
+  memoryInput: document.querySelector("#memoryInput"),
+  resultLine: document.querySelector("#resultLine"),
+  answerPanel: document.querySelector("#answerPanel"),
+  answerText: document.querySelector("#answerText"),
+  analysisText: document.querySelector("#analysisText"),
+  showAnswerBtn: document.querySelector("#showAnswerBtn"),
+  knownBtn: document.querySelector("#knownBtn"),
+  unknownBtn: document.querySelector("#unknownBtn"),
+  prevBtn: document.querySelector("#prevBtn"),
+  nextBtn: document.querySelector("#nextBtn"),
+  markBtn: document.querySelector("#markBtn"),
+  markIcon: document.querySelector("#markIcon"),
+  shuffleBtn: document.querySelector("#shuffleBtn"),
+  resetBtn: document.querySelector("#resetBtn"),
+  statTotal: document.querySelector("#statTotal"),
+  statDone: document.querySelector("#statDone"),
+  statAccuracy: document.querySelector("#statAccuracy"),
+  statMarked: document.querySelector("#statMarked")
+};
+
+function loadQuestionBank() {
+  try {
+    const saved = localStorage.getItem(BANK_STORAGE_KEY);
+    if (!saved) return normalizeQuestionBank(DEFAULT_BANK, "内置题库");
+    return normalizeQuestionBank(JSON.parse(saved), "导入题库");
+  } catch {
+    localStorage.removeItem(BANK_STORAGE_KEY);
+    return normalizeQuestionBank(DEFAULT_BANK, "内置题库");
+  }
+}
+
+function normalizeQuestionBank(input, fallbackTitle = "导入题库") {
+  const raw = Array.isArray(input) ? { meta: { title: fallbackTitle }, questions: input } : input || {};
+  const rawQuestions = Array.isArray(raw.questions) ? raw.questions : [];
+  const normalized = rawQuestions.map((q, index) => normalizeQuestion(q, index)).filter(Boolean);
+  return {
+    meta: {
+      title: raw.meta && raw.meta.title ? String(raw.meta.title) : fallbackTitle,
+      source: raw.meta && raw.meta.source ? String(raw.meta.source) : fallbackTitle,
+      count: normalized.length
+    },
+    questions: normalized
+  };
+}
+
+function normalizeQuestion(q, index) {
+  if (!q || typeof q !== "object") return null;
+  const type = q.type || (q.options ? "choice" : "short");
+  const section = q.section || ({ choice: "选择题", fill: "填空题", code: "算法填空", short: "问答题", design: "算法设计题" }[type] || "题目");
+  const number = Number(q.number) || index + 1;
+  const title = q.title || `${section} ${number}`;
+  const prompt = q.prompt || q.question || q.stem || title;
+  let options = q.options;
+  if (options && !Array.isArray(options) && typeof options === "object") {
+    options = Object.entries(options).map(([key, text]) => ({ key, text }));
+  }
+  if (type === "choice") {
+    options = (Array.isArray(options) ? options : []).map((option, optionIndex) => ({
+      key: String(option.key || "ABCD"[optionIndex] || optionIndex + 1),
+      text: String(option.text || option.label || option.value || "")
+    })).filter((option) => option.text);
+    if (!options.length) return null;
+  }
+  return {
+    id: String(q.id || `${type}-${String(number).padStart(2, "0")}`),
+    type,
+    section,
+    number,
+    title: String(title),
+    prompt: String(prompt),
+    ...(options ? { options } : {}),
+    answer: q.answer == null ? "" : String(q.answer),
+    analysis: q.analysis || q.explanation || q.explain || "",
+    ...(q.image ? { image: String(q.image) } : {})
+  };
+}
+
+function importQuestionBank(input) {
+  const nextBank = normalizeQuestionBank(input, "导入题库");
+  if (!nextBank.questions.length) throw new Error("没有找到有效题目");
+  bank = nextBank;
+  questions = nextBank.questions;
+  localStorage.setItem(BANK_STORAGE_KEY, JSON.stringify(nextBank));
+  app = { ...app, section: "全部题型", status: "all", query: "", index: 0, records: {}, marked: {} };
+  initFilters();
+  render();
+  closeDrawerOnMobile();
+  if (els.importHint) els.importHint.textContent = `已导入 ${questions.length} 题`;
+  return nextBank;
+}
+
+function restoreDefaultBank() {
+  if (!confirm("确认恢复内置题库？当前导入题库和答题记录会清空。")) return;
+  localStorage.removeItem(BANK_STORAGE_KEY);
+  bank = normalizeQuestionBank(DEFAULT_BANK, "内置题库");
+  questions = bank.questions || [];
+  app = { ...app, section: "全部题型", status: "all", query: "", index: 0, records: {}, marked: {} };
+  initFilters();
+  render();
+  closeDrawerOnMobile();
+  if (els.importHint) els.importHint.textContent = "已恢复内置题库";
+}
+
+function questionBankTemplate() {
+  return {
+    meta: { title: "我的新题库", source: "GPT 生成" },
+    questions: [
+      {
+        id: "choice-001",
+        type: "choice",
+        section: "选择题",
+        number: 1,
+        title: "选择题 1",
+        prompt: "这里写题干（ ）。",
+        options: [
+          { key: "A", text: "选项 A" },
+          { key: "B", text: "选项 B" },
+          { key: "C", text: "选项 C" },
+          { key: "D", text: "选项 D" }
+        ],
+        answer: "A",
+        analysis: "这里写解析。"
+      }
+    ]
+  };
+}
+
+window.importQuestionBank = importQuestionBank;
+window.getQuestionBankTemplate = questionBankTemplate;
+
+
+// ── 复习提要（摘自 DOCX） ──
+const REVIEW_GUIDE = {
+  "meta": {
+    "title": "算法设计与分析 · 复习提要",
+    "sources": [
+      "算法设计与分析复习提要.docx",
+      "算法设计与分析复习练习-20260508.docx",
+      "自编 4 皇后图解"
+    ],
+    "updated": "2026-05-24"
+  },
+  "chapters": [
+    {
+      "id": "glossary",
+      "number": "词",
+      "title": "核心名词解释",
+      "subtitle": "考试高频术语速查",
+      "summary": "覆盖复杂度、分治、贪心、动态规划、回溯、分支限界等 30 个核心名词。",
+      "examFocus": [
+        "五特性",
+        "O/Ω/Θ",
+        "贪心两要素",
+        "DP 两要素",
+        "子集树/排列树",
+        "约束/限界函数"
+      ],
+      "blocks": [
+        {
+          "type": "glossary",
+          "title": "算法设计与分析名词表",
+          "items": [
+            {
+              "term": "算法",
+              "def": "解决特定问题有限步骤的运算序列；必须满足输入、输出、确定性、有穷性、可行性。"
+            },
+            {
+              "term": "时间复杂度 T(n)",
+              "def": "算法运行时间随输入规模 n 增长的数量级，是评价算法的主要指标。"
+            },
+            {
+              "term": "空间复杂度 S(n)",
+              "def": "算法运行所需额外存储空间随 n 增长的数量级。"
+            },
+            {
+              "term": "渐近分析",
+              "def": "当 n→∞ 时忽略低阶项与常数，只保留主项阶次。"
+            },
+            {
+              "term": "O(f) / Ω(f) / Θ(f)",
+              "def": "分别为渐近上界、下界、紧界（同阶）。"
+            },
+            {
+              "term": "递推",
+              "def": "用已知初值和递推关系自底向上推导各阶段结果。"
+            },
+            {
+              "term": "递归",
+              "def": "算法或函数直接或间接调用自身；需有递归出口。"
+            },
+            {
+              "term": "备忘录法",
+              "def": "自顶向下动态规划，用表格保存已算子问题，避免重复计算。"
+            },
+            {
+              "term": "蛮力法",
+              "def": "穷举所有可能方案并逐一检验，简单但可能指数级耗时。"
+            },
+            {
+              "term": "分治法",
+              "def": "分解→递归求解独立子问题→合并；典型如快排、归并、二分。"
+            },
+            {
+              "term": "减治法",
+              "def": "每步将问题规模减小（常减 1 或减半），通常只递归一个子问题。"
+            },
+            {
+              "term": "贪心选择性质",
+              "def": "整体最优可通过一系列局部最优选择达到；贪心与 DP 的主要区别之一。"
+            },
+            {
+              "term": "最优子结构",
+              "def": "问题最优解包含其子问题的最优解；DP 与贪心都需要。"
+            },
+            {
+              "term": "重叠子问题",
+              "def": "递归过程中同一子问题被多次求解；动态规划的核心特征。"
+            },
+            {
+              "term": "动态规划",
+              "def": "将多阶段决策化为重叠子问题，保存子问题最优解；常自底向上填表。"
+            },
+            {
+              "term": "解空间树",
+              "def": "所有可能解在树形结构中的组织；叶结点对应候选解。"
+            },
+            {
+              "term": "搜索空间树",
+              "def": "算法实际搜索过的解空间子集；回溯/剪枝后不含全部无效分支。"
+            },
+            {
+              "term": "子集树",
+              "def": "n 层二叉树，每层 0/1 决策，共 2ⁿ 叶结点；0-1 背包典型结构。"
+            },
+            {
+              "term": "排列树",
+              "def": "n 层多叉树，每层选未使用的元素，共 n! 叶结点；TSP、N 皇后。"
+            },
+            {
+              "term": "回溯法",
+              "def": "解空间树上深度优先搜索，遇不可行或不优则回退（回溯）。"
+            },
+            {
+              "term": "约束函数",
+              "def": "判断部分解是否可行，不可行则剪枝（如 N 皇后冲突）。"
+            },
+            {
+              "term": "限界函数",
+              "def": "估计部分解能否导出更优解，不能则剪枝（如背包价值上界）。"
+            },
+            {
+              "term": "活结点",
+              "def": "已生成但未扩展的结点；分支限界用队列/堆维护。"
+            },
+            {
+              "term": "扩展结点",
+              "def": "当前正在生成其子结点的活结点。"
+            },
+            {
+              "term": "分支限界法",
+              "def": "广度优先或优先队列扩展活结点，每结点最多扩展一次，求最优解。"
+            },
+            {
+              "term": "FIFO 分支限界",
+              "def": "队列式，按广度优先扩展活结点。"
+            },
+            {
+              "term": "优先队列式分支限界",
+              "def": "按最大效益或最小耗费优先扩展；用堆实现。"
+            },
+            {
+              "term": "Prim / Kruskal",
+              "def": "构造最小生成树的两种贪心算法。"
+            },
+            {
+              "term": "Dijkstra 算法",
+              "def": "单源最短路径贪心算法，适用于非负权图。"
+            },
+            {
+              "term": "哈夫曼编码",
+              "def": "贪心构造最优前缀码，高频字符配短码，O(n log n)。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundation",
+      "number": "1-2",
+      "title": "算法基础与复杂度分析",
+      "subtitle": "第1章 算法设计基础 · 第2章 算法分析基础",
+      "summary": "理解算法的定义与五特性，掌握时间/空间复杂度、渐近记号及程序复杂度分析方法。",
+      "examFocus": [
+        "算法五特性（输入/输出/确定性/有穷性/可行性）",
+        "O/Ω/Θ 含义与比较",
+        "常见阶：O(1)<O(log n)<O(n)<O(n log n)<O(n²)<O(2ⁿ)<O(n!)",
+        "最坏/最好/平均复杂度",
+        "丢低阶项取主项的渐近分析"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "算法定义",
+          "content": "算法是有穷规则的集合，规定了解决某一问题的有限次运算序列；或在输入域 I 上，对所有输入 x 均能在有穷步内终止的计算序列。"
+        },
+        {
+          "type": "list",
+          "title": "算法五特性",
+          "items": [
+            "有穷性：有限步骤后终止，不能死循环",
+            "确定性（确切性）：每步定义明确，无二义性",
+            "输入：0 个或多个输入",
+            "输出：至少 1 个输出，反映加工结果",
+            "可行性：每步运算可在有限时间内完成"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "复杂度度量",
+          "items": [
+            "时间复杂度 T(n)：运行所需时间随规模 n 的增长",
+            "空间复杂度 S(n)：运行所需额外空间",
+            "评价算法优劣主要看时间复杂度，空间复杂度次之",
+            "三种情况：最坏 Tmax(n)、最好 Tmin(n)、平均复杂度"
+          ]
+        },
+        {
+          "type": "formula",
+          "title": "常见程序段复杂度",
+          "items": [
+            "单语句 x=x+1 → O(1)",
+            "for(i=1;i<=n;i++) x++ → O(n)",
+            "双重循环 i,j → O(n²)",
+            "i 每次乘 2 → O(log n)",
+            "外层 n、内层 j 每次乘 2 → O(n log n)",
+            "三重循环 → O(n³)"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "渐近记号",
+          "items": [
+            "O(f)：渐近上界（阶不高于 f）",
+            "Ω(f)：渐近下界（阶不低于 f）",
+            "Θ(f)：紧界，同时属于 O(f) 与 Ω(f)",
+            "方法：丢低阶项，取主项并去掉常数系数"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "考试提醒",
+          "content": "指数阶 O(2ⁿ)、O(n!) 通常不是好算法。动态规划常以空间换时间。"
+        },
+        {
+          "type": "image",
+          "title": "常见排序算法对比表",
+          "src": "assets/docx/summary_image1.png",
+          "caption": "摘自复习提要：插入/选择/交换/归并/基数排序的时间、空间复杂度与稳定性对比。"
+        }
+      ]
+    },
+    {
+      "id": "recursion",
+      "number": "4",
+      "title": "递推与递归",
+      "subtitle": "第4章 递推算法设计技术",
+      "summary": "掌握递推思想、递归概念与典型实例，能写简单递归程序并分析递归式。",
+      "examFocus": [
+        "递归两要素：出口 + 递归方程",
+        "n!、斐波那契、汉诺塔",
+        "错装信封、整数划分（了解）",
+        "常见递推式求解"
+      ],
+      "blocks": [
+        {
+          "type": "list",
+          "title": "递推 vs 递归",
+          "items": [
+            "递推：由已知初值逐层推导，常自底向上",
+            "递归：函数/过程调用自身（直接/间接）",
+            "备忘录法 = 自顶向下 + 记忆化，是 DP 的变形"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "典型递归实例",
+          "items": [
+            "n!  factorial(n)=n·factorial(n-1)",
+            "斐波那契数列 F(n)=F(n-1)+F(n-2)",
+            "汉诺塔：2ⁿ-1 步",
+            "整数划分、Catalan 数、错排问题（了解含义）"
+          ]
+        },
+        {
+          "type": "formula",
+          "title": "常见递推式（需会求）",
+          "items": [
+            "T(n)=T(n-1)+n, T(1)=b",
+            "T(n)=T(n-1)+c, T(1)=b",
+            "T(n)=2T(n/2)+c, T(1)=b",
+            "T(n)=2T(n/2)+cn, T(1)=b → 归并排序型"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "考试提醒",
+          "content": "设计 aⁿ 递归算法时，可进一步用快速幂优化到 O(log n)。"
+        }
+      ]
+    },
+    {
+      "id": "brute",
+      "number": "5",
+      "title": "蛮力法",
+      "subtitle": "第5章 蛮力法",
+      "summary": "穷举所有可能并逐一检验，适合规模小或作为基准算法。",
+      "examFocus": [
+        "百钱买百鸡建模与枚举",
+        "串匹配穷举 O(mn)",
+        "选择排序/冒泡排序",
+        "4人4任务分配穷举"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "基本思想",
+          "content": "又称穷举法：在可能集合中一一枚举，用约束条件判定可行解。步骤：建立数学模型 → 确定取值范围 → 穷举检验。"
+        },
+        {
+          "type": "list",
+          "title": "典型应用",
+          "items": [
+            "百钱买百鸡：枚举两种或三种鸡的数量",
+            "串匹配：逐位比较，复杂度 O(mn)；了解 KMP 思想",
+            "选择排序：每次选最小，O(n²)",
+            "冒泡排序：相邻交换，O(n²)",
+            "平面最近点对蛮力法 O(n²)"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "考试提醒",
+          "content": "蛮力法最大缺点是运算量大。可配合剪枝优化。"
+        }
+      ]
+    },
+    {
+      "id": "divide",
+      "number": "6",
+      "title": "分治法",
+      "subtitle": "第6章 分治法",
+      "summary": "分而治之：分解 → 递归求解子问题 → 合并。许多经典排序与搜索算法的基础。",
+      "examFocus": [
+        "分治四条件/特征",
+        "归并排序、快速排序及复杂度",
+        "二分搜索、棋盘覆盖、大整数乘法",
+        "最大子段和、Strassen 矩阵乘法（了解）",
+        "自顶向下求解"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "基本思想",
+          "content": "将问题分解为若干规模更小的同类子问题，递归求解后合并得到原问题解。"
+        },
+        {
+          "type": "list",
+          "title": "适用条件",
+          "items": [
+            "规模足够小时可直接解决",
+            "可分解为若干规模较小的相同问题",
+            "子问题解可合并为原问题解",
+            "子问题相互独立（无重叠）"
+          ]
+        },
+        {
+          "type": "steps",
+          "title": "分治框架",
+          "items": [
+            "若 |P|≤n₀，直接求解（adhoc）",
+            "否则将 P 分解为 P₁…Pₖ",
+            "递归求解各子问题 yᵢ=divide-and-conquer(Pᵢ)",
+            "合并 y₁…yₖ 得到原问题解"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "典型问题",
+          "items": [
+            "二分搜索：O(log n)，前提有序",
+            "归并排序：O(n log n)，稳定",
+            "快速排序：取决于划分均衡性，平均 O(n log n)",
+            "最大子段和、棋盘覆盖、最近点对 O(n log n)",
+            "大整数乘法、Strassen 矩阵乘法",
+            "循环赛日程表、选择问题"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "考试提醒",
+          "content": "0/1 背包不能简单用分治。快排性能取决于 Partition 是否均衡。"
+        },
+        {
+          "type": "image",
+          "title": "图论示例（最小生成树）",
+          "src": "assets/docx/practice_image1.png",
+          "caption": "摘自复习练习：带权无向图，可用于 Prim/Kruskal 或最短路分析练习。"
+        }
+      ]
+    },
+    {
+      "id": "decrease",
+      "number": "7",
+      "title": "减治法",
+      "subtitle": "第7章 减治法",
+      "summary": "每步将问题规模减 1 或减一半，与分治的区别在于通常只产生一个子问题。",
+      "examFocus": [
+        "折半查找/二分搜索",
+        "插入排序、选择排序思想",
+        "两有序序列中位数"
+      ],
+      "blocks": [
+        {
+          "type": "list",
+          "title": "核心内容",
+          "items": [
+            "折半查找（二分查找）：每次排除一半，O(log n)",
+            "n 个数求最大数：减 1 规模递归",
+            "两个等长升序序列的中位数",
+            "了解 Top-k 问题及 O(n) 改进"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "与分治区别",
+          "content": "减治法通常只递归一个子问题；分治递归多个子问题再合并。"
+        }
+      ]
+    },
+    {
+      "id": "greedy",
+      "number": "8",
+      "title": "贪心算法",
+      "subtitle": "第8章 贪心算法",
+      "summary": "每步做当前最优的局部选择，期望得到全局最优。",
+      "examFocus": [
+        "贪心选择性质 + 最优子结构",
+        "活动安排、分数背包、最优装载",
+        "Prim/Kruskal 最小生成树、Dijkstra 最短路",
+        "哈夫曼编码 O(n log n)",
+        "0-1 背包不能简单贪心"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "基本思想",
+          "content": "不从整体最优直接考虑，每步在局部做当前看来最好的选择，期望最终整体最优。"
+        },
+        {
+          "type": "glossary",
+          "title": "贪心相关名词",
+          "items": [
+            {
+              "term": "贪心选择性质",
+              "def": "可通过局部最优选择得到全局最优。"
+            },
+            {
+              "term": "活动安排问题",
+              "def": "按结束时间最早贪心，选最多不冲突活动。"
+            },
+            {
+              "term": "分数背包",
+              "def": "可按比例装入，按单位价值贪心；与 0-1 背包不同。"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "title": "两要素",
+          "items": [
+            "贪心选择性质：整体最优可通过一系列局部最优达到（与 DP 的主要区别）",
+            "最优子结构：问题最优解包含子问题最优解"
+          ]
+        },
+        {
+          "type": "steps",
+          "title": "求解过程",
+          "items": [
+            "从初始解（常为空）出发",
+            "每步选择一个可行分量加入部分解",
+            "直到得到完整可行解"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "典型问题",
+          "items": [
+            "活动安排问题",
+            "分数背包（按单位价值排序）",
+            "最优装载（尽可能多装集装箱）",
+            "最小生成树 Prim / Kruskal",
+            "单源最短路径 Dijkstra",
+            "哈夫曼编码：高频字符短码"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "不作要求/易错",
+          "content": "TSP、图着色、埃及分数贪心不一定最优。0-1 背包需 DP/回溯/分支限界。"
+        }
+      ]
+    },
+    {
+      "id": "dp",
+      "number": "9",
+      "title": "动态规划",
+      "subtitle": "第9章 动态规划",
+      "summary": "将多阶段决策分解为重叠子问题，保存子问题最优解，通常自底向上填表。",
+      "examFocus": [
+        "最优子结构 + 重叠子问题",
+        "四步骤：定性质→递推→求最优值→构造解",
+        "LCS、0-1背包、编辑距离、数塔、最大子段和",
+        "矩阵连乘递推式",
+        "备忘录 = 自顶向下 DP"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "基本思想",
+          "content": "将待求问题分解为子问题，子问题往往不独立（重叠），先求子问题最优解再组合。以空间换时间。"
+        },
+        {
+          "type": "glossary",
+          "title": "DP 相关名词",
+          "items": [
+            {
+              "term": "最优子结构",
+              "def": "原问题最优解包含子问题最优解。"
+            },
+            {
+              "term": "重叠子问题",
+              "def": "不同递归路径会重复遇到相同子问题。"
+            },
+            {
+              "term": "状态转移方程",
+              "def": "描述 dp[i] 与子状态之间关系的递推式。"
+            },
+            {
+              "term": "填表法",
+              "def": "自底向上按规模递增计算并存储子问题最优值。"
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "title": "四步骤",
+          "items": [
+            "找出最优解性质，刻画结构特征",
+            "递归定义最优值（写 DP 方程）",
+            "自底向上（或自顶向下备忘录）计算最优值",
+            "根据表格信息构造最优解"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "两要素",
+          "items": [
+            "最优子结构性质",
+            "重叠子问题性质（与分治区别：子问题不独立）"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "典型问题",
+          "items": [
+            "最长公共子序列 LCS",
+            "0-1 背包问题",
+            "编辑距离（近似串匹配）",
+            "最大子段和 O(n)",
+            "数塔/网格最小路径和",
+            "矩阵连乘 m[i][j]=min{m[i][k]+m[k][j]}+代价"
+          ]
+        },
+        {
+          "type": "compare",
+          "title": "与贪心/分治",
+          "items": [
+            [
+              "对比",
+              "动态规划",
+              "贪心",
+              "分治"
+            ],
+            [
+              "子问题",
+              "重叠，需保存",
+              "不需组合多种",
+              "独立"
+            ],
+            [
+              "方向",
+              "常自底向上",
+              "逐步局部选择",
+              "常自顶向下"
+            ],
+            [
+              "0-1背包",
+              "✓",
+              "✗（一般）",
+              "✗"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backtrack",
+      "number": "10",
+      "title": "深度优先搜索与回溯",
+      "subtitle": "第10章 深度优先搜索",
+      "summary": "以深度优先方式搜索解空间树，回溯法 = DFS + 剪枝。",
+      "examFocus": [
+        "DFS 搜索过程",
+        "子集树 vs 排列树",
+        "约束函数 + 限界函数",
+        "N皇后、0-1背包、装载、TSP排列树",
+        "剪枝函数 = 避免无效搜索的策略"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "回溯法思想",
+          "content": "从根出发深度优先扩展；扩展结点找子结点，无可扩展则回退到最近活结点。回溯 = 带剪枝的 DFS。"
+        },
+        {
+          "type": "steps",
+          "title": "算法步骤",
+          "items": [
+            "定义解空间",
+            "确定解空间结构（子集树/排列树）",
+            "DFS 搜索，用剪枝函数避免无效搜索"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "解空间树类型",
+          "items": [
+            "子集树：n 层二叉，2ⁿ 叶结点（0-1 选择）",
+            "排列树：n! 叶结点（全排列，如 TSP、N皇后）",
+            "图 m 着色：mⁿ 叶结点，内结点孩子数 m"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "剪枝函数",
+          "items": [
+            "约束函数：剪去不可行解（如 N皇后冲突）",
+            "限界函数：剪去不可能更优的解（如背包价值界）",
+            "0-1背包：约束+限界；N皇后：主要用约束"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "典型问题",
+          "items": [
+            "N 皇后问题",
+            "0-1 背包（回溯/分支限界）",
+            "装载问题",
+            "旅行售货员 TSP（排列树）",
+            "排列问题 perm 框架"
+          ]
+        },
+        {
+          "type": "example",
+          "title": "例题：4 皇后解空间树与搜索空间树（design-09）",
+          "content": "按行 1→4 依次为皇后选列；冲突则剪枝回溯。",
+          "steps": [
+            "写出约束：不同行、不同列、不同对角线",
+            "画解空间树：4 层，每层最多 4 个分支，叶结点为 (c1,c2,c3,c4)",
+            "画搜索空间树：DFS 实际路径，用 ✕ 标记剪枝分支",
+            "给出两个可行解 (2,4,1,3) 与 (3,1,4,2) 的棋盘"
+          ],
+          "figures": [
+            {
+              "src": "assets/diagrams/4queens-solution-space-tree.svg",
+              "caption": "4 皇后解空间树（完整结构示意）"
+            },
+            {
+              "src": "assets/diagrams/4queens-search-tree.svg",
+              "caption": "4 皇后搜索空间树（回溯剪枝路径）"
+            },
+            {
+              "src": "assets/diagrams/4queens-solutions.svg",
+              "caption": "两个可行解棋盘"
+            }
+          ]
+        },
+        {
+          "type": "image",
+          "title": "子集树结构（0-1 背包）",
+          "src": "assets/docx/summary_image2.png",
+          "caption": "3 物品 0-1 背包：左分支 1=选，右分支 0=不选；叶结点对应一种取法。"
+        },
+        {
+          "type": "image",
+          "title": "排列树结构（3 元素全排列）",
+          "src": "assets/docx/summary_image3.png",
+          "caption": "3 元素排列树：TSP、N 皇后解空间常为此类排列树。"
+        },
+        {
+          "type": "tip",
+          "title": "考试提醒",
+          "content": "回溯效率依赖：约束值个数、计算约束/限界函数耗时。深度优先 = 回溯搜索方式。"
+        }
+      ]
+    },
+    {
+      "id": "branch",
+      "number": "11",
+      "title": "广度优先搜索与分支限界",
+      "subtitle": "第11章 广度优先搜索",
+      "summary": "按广度或优先队列扩展活结点，每个活结点最多一次成为扩展结点。",
+      "examFocus": [
+        "FIFO 队列式 vs 优先队列式",
+        "最大效益/最小耗费优先",
+        "与回溯的区别（BFS vs DFS）",
+        "0-1背包、装载、任务分配",
+        "活结点表组织：最大堆/最小堆"
+      ],
+      "blocks": [
+        {
+          "type": "definition",
+          "title": "分支限界思想",
+          "content": "在 A* 思想基础上，用限界剪枝。活结点成为扩展结点后，一次性产生所有儿子；用约束/限界函数剪枝，其余儿子加入活结点表。"
+        },
+        {
+          "type": "steps",
+          "title": "算法步骤",
+          "items": [
+            "建立活结点表（FIFO 队列或优先队列）",
+            "取活结点为当前扩展结点，广度方式扩展所有子结点",
+            "不可行或非最优的子结点舍弃，其余入表",
+            "重复直到找到解或活结点表为空"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "两种组织方式",
+          "items": [
+            "队列式（FIFO）分支限界：广度优先",
+            "优先队列式：最大效益优先用最大堆，最小耗费优先用最小堆",
+            "常见搜索方式：广度优先、最小耗费优先、最大效益优先（非深度优先）"
+          ]
+        },
+        {
+          "type": "compare",
+          "title": "与回溯法对比",
+          "items": [
+            [
+              "对比项",
+              "回溯法",
+              "分支限界法"
+            ],
+            [
+              "搜索方式",
+              "深度优先",
+              "广度优先或优先队列"
+            ],
+            [
+              "扩展结点",
+              "可多次回退再扩展",
+              "每个活结点最多扩展一次"
+            ],
+            [
+              "目标",
+              "求所有解或一组解",
+              "常求最优解"
+            ],
+            [
+              "典型堆",
+              "栈（隐式）",
+              "最大堆/最小堆"
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "title": "典型应用",
+          "items": [
+            "0-1 背包（需排序+限界）",
+            "最优装载",
+            "任务分配",
+            "TSP（最大堆存活结点）",
+            "最大团问题（最大堆）"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cheatsheet",
+      "number": "★",
+      "title": "算法策略速查表",
+      "subtitle": "对比记忆 · 考试高频",
+      "summary": "各设计策略核心区别与典型问题一览，适合考前快速回顾。",
+      "examFocus": [
+        "自顶向下 vs 自底向上",
+        "哪种算法解哪种题",
+        "时间复杂度速记",
+        "解空间树类型判断"
+      ],
+      "blocks": [
+        {
+          "type": "compare",
+          "title": "设计策略总览",
+          "items": [
+            [
+              "策略",
+              "核心特征",
+              "典型问题",
+              "常见复杂度"
+            ],
+            [
+              "蛮力法",
+              "穷举+检验",
+              "百鸡、串匹配",
+              "O(n²) 或指数"
+            ],
+            [
+              "分治法",
+              "分解+合并，子问题独立",
+              "归并/快排、二分、棋盘",
+              "O(n log n)"
+            ],
+            [
+              "减治法",
+              "减规模，单子问题",
+              "折半查找",
+              "O(log n)"
+            ],
+            [
+              "贪心法",
+              "局部最优",
+              "活动安排、MST、Dijkstra",
+              "O(n log n)"
+            ],
+            [
+              "动态规划",
+              "重叠子问题+填表",
+              "LCS、0-1背包、编辑距离",
+              "O(n²) 等"
+            ],
+            [
+              "回溯法",
+              "DFS+剪枝",
+              "N皇后、排列",
+              "指数级"
+            ],
+            [
+              "分支限界",
+              "BFS/优先队列+界",
+              "0-1背包最优",
+              "指数级但剪枝"
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "title": "高频判断题",
+          "items": [
+            "自底向上求最优 → 动态规划（Q5）",
+            "自顶向下分解 → 分治法 / 备忘录（Q30）",
+            "深度优先系统搜索 → 回溯法",
+            "广度优先 / 最小耗费 → 分支限界法",
+            "最大效益优先 → 分支限界（最大堆）",
+            "最长公共子序列 → 动态规划",
+            "大整数乘法 → 分治法",
+            "0-1背包：DP / 回溯 / 分支限界 ✓；纯贪心 ✗"
+          ]
+        },
+        {
+          "type": "list",
+          "title": "复杂度阶次（低到高）",
+          "items": [
+            "O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(n³) < O(2ⁿ) < O(n!) < O(nⁿ)"
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+function reviewChapters() {
+  return REVIEW_GUIDE.chapters || [];
+}
+
+function currentReviewChapter() {
+  const chapters = reviewChapters();
+  const idx = Math.min(Math.max(app.reviewIndex || 0, 0), Math.max(chapters.length - 1, 0));
+  return chapters[idx] || null;
+}
+
+function renderReviewBlock(block, idx, collapsed) {
+  const typeLabels = { definition: "定义", list: "要点", formula: "公式", steps: "步骤", compare: "对比", tip: "提醒", glossary: "名词", image: "图示", example: "例题", svg: "图解" };
+  let body = "";
+  if (block.type === "glossary" && Array.isArray(block.items)) {
+    body = `<dl class="review-glossary">${block.items.map(it => `<dt>${escapeHtml(it.term)}</dt><dd>${escapeHtml(it.def)}</dd>`).join("")}</dl>`;
+  } else if ((block.type === "image" || block.type === "svg") && block.src) {
+    body = `<figure class="review-figure"><object type="image/svg+xml" data="${escapeAttr(block.src)}"><img src="${escapeAttr(block.src)}" alt="${escapeAttr(block.caption || block.title || "")}" loading="lazy" /></object>${block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : ""}</figure>`;
+  } else if (block.type === "example") {
+    const figs = (block.figures || []).map(f => `<figure class="review-figure"><object type="image/svg+xml" data="${escapeAttr(f.src)}"><img src="${escapeAttr(f.src)}" alt="${escapeAttr(f.caption || "")}" loading="lazy" /></object>${f.caption ? `<figcaption>${escapeHtml(f.caption)}</figcaption>` : ""}</figure>`).join("");
+    const steps = block.steps ? `<ol>${block.steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}</ol>` : "";
+    body = `<div class="review-example"><h5>${escapeHtml(block.title || "例题")}</h5>${block.content ? `<p>${escapeHtml(block.content)}</p>` : ""}${steps}${figs}</div>`;
+  } else if (block.type === "compare" && Array.isArray(block.items) && block.items.length) {
+    const rows = block.items;
+    const head = rows[0].map(c => `<th>${escapeHtml(c)}</th>`).join("");
+    const bodyRows = rows.slice(1).map(row => `<tr>${row.map(c => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`).join("");
+    body = `<div class="review-compare-wrap"><table class="review-compare"><thead><tr>${head}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
+  } else if (block.content) {
+    body = block.type === "tip"
+      ? `<div class="review-tip">${escapeHtml(block.content)}</div>`
+      : `<p>${escapeHtml(block.content)}</p>`;
+  } else if (Array.isArray(block.items)) {
+    body = `<ul>${block.items.map(it => `<li>${escapeHtml(it)}</li>`).join("")}</ul>`;
+  }
+  const cls = collapsed ? "review-block collapsed" : "review-block";
+  return `<article class="${cls}" data-block="${idx}">
+    <div class="review-block-head" role="button" tabindex="0" aria-expanded="${collapsed ? "false" : "true"}">
+      <h4>${escapeHtml(block.title || "要点")}</h4>
+      <span class="review-block-type">${typeLabels[block.type] || block.type || ""}</span>
+    </div>
+    <div class="review-block-body">${body}</div>
+  </article>`;
+}
+
+function renderReviewNav() {
+  const nav = document.getElementById("reviewChapterNav");
+  const strip = document.getElementById("reviewChapterStrip");
+  const chapters = reviewChapters();
+  const html = chapters.map((ch, idx) => {
+    const active = idx === (app.reviewIndex || 0) ? "active" : "";
+    return `<button type="button" class="review-chapter-btn ${active}" data-review-index="${idx}">
+      <span class="review-ch-num">${escapeHtml(ch.number)}</span>
+      <span class="review-ch-title">${escapeHtml(ch.title)}</span>
+      <span class="review-ch-sub">${escapeHtml(ch.subtitle || "")}</span>
+    </button>`;
+  }).join("");
+  const chipHtml = chapters.map((ch, idx) => {
+    const active = idx === (app.reviewIndex || 0) ? "active" : "";
+    return `<button type="button" class="review-chapter-chip ${active}" data-review-index="${idx}">${escapeHtml(ch.number)} ${escapeHtml(ch.title)}</button>`;
+  }).join("");
+  if (nav) nav.innerHTML = html;
+  if (strip) strip.innerHTML = chipHtml;
+}
+
+function renderReviewContent() {
+  const ch = currentReviewChapter();
+  const hero = document.getElementById("reviewHero");
+  const tags = document.getElementById("reviewExamTags");
+  const blocks = document.getElementById("reviewBlocks");
+  const footer = document.getElementById("reviewFooter");
+  if (!ch || !hero || !blocks) return;
+
+  hero.innerHTML = `
+    <p class="review-hero-kicker">第 ${escapeHtml(ch.number)} 章 · 复习提要</p>
+    <h2>${escapeHtml(ch.title)}</h2>
+    <p class="review-hero-sub">${escapeHtml(ch.subtitle || "")}</p>
+    <p>${escapeHtml(ch.summary || "")}</p>`;
+
+  const query = (app.reviewQuery || "").trim().toLowerCase();
+  const focus = (ch.examFocus || []).filter(t => !query || t.toLowerCase().includes(query));
+  if (tags) {
+    tags.innerHTML = focus.length
+      ? focus.map(t => `<span class="review-exam-tag">${escapeHtml(t)}</span>`).join("")
+      : (query ? `<span class="review-exam-tag">无匹配考点</span>` : "");
+  }
+
+  const blockList = (ch.blocks || []).filter(b => {
+    if (!query) return true;
+    const blob = [b.title, b.content, ...(b.items || []), ...((b.items || []).map(it => typeof it === "object" ? [it.term, it.def].join(" ") : it))].flat().join(" ").toLowerCase();
+    return blob.includes(query);
+  });
+
+  const collapsedDefault = !!app.reviewCollapsed;
+  blocks.innerHTML = blockList.length
+    ? blockList.map((b, i) => renderReviewBlock(b, i, collapsedDefault)).join("")
+    : `<div class="review-block"><div class="review-block-body"><p>未找到匹配内容，请更换关键词。</p></div></div>`;
+
+  if (footer) {
+    footer.textContent = `资料来源：${(REVIEW_GUIDE.meta && REVIEW_GUIDE.meta.sources || []).join("、")} · 更新 ${REVIEW_GUIDE.meta && REVIEW_GUIDE.meta.updated || ""}`;
+  }
+
+  const searchEl = document.getElementById("reviewSearch");
+  if (searchEl && searchEl.value !== (app.reviewQuery || "")) searchEl.value = app.reviewQuery || "";
+}
+
+function renderReviewMode() {
+  document.body.classList.toggle("mode-review", app.mode === "review");
+  renderReviewNav();
+  renderReviewContent();
+}
+
+function bindReviewEvents() {
+  const bindNav = (root) => {
+    if (!root || root.dataset.bound) return;
+    root.dataset.bound = "1";
+    root.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-review-index]");
+      if (!btn) return;
+      app.reviewIndex = Number(btn.dataset.reviewIndex);
+      saveState();
+      renderReviewMode();
+      closeDrawerOnMobile();
+    });
+  };
+  bindNav(document.getElementById("reviewChapterNav"));
+  bindNav(document.getElementById("reviewChapterStrip"));
+
+  const search = document.getElementById("reviewSearch");
+  if (search && !search.dataset.bound) {
+    search.dataset.bound = "1";
+    search.addEventListener("input", () => {
+      app.reviewQuery = search.value;
+      renderReviewContent();
+    });
+  }
+
+  const expand = document.getElementById("reviewExpandAll");
+  const collapse = document.getElementById("reviewCollapseAll");
+  const blocks = document.getElementById("reviewBlocks");
+  if (expand && !expand.dataset.bound) {
+    expand.dataset.bound = "1";
+    expand.addEventListener("click", () => {
+      app.reviewCollapsed = false;
+      renderReviewContent();
+    });
+  }
+  if (collapse && !collapse.dataset.bound) {
+    collapse.dataset.bound = "1";
+    collapse.addEventListener("click", () => {
+      app.reviewCollapsed = true;
+      renderReviewContent();
+    });
+  }
+  if (blocks && !blocks.dataset.bound) {
+    blocks.dataset.bound = "1";
+    blocks.addEventListener("click", (e) => {
+      const head = e.target.closest(".review-block-head");
+      if (!head) return;
+      head.closest(".review-block").classList.toggle("collapsed");
+    });
+    blocks.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const head = e.target.closest(".review-block-head");
+      if (!head) return;
+      e.preventDefault();
+      head.closest(".review-block").classList.toggle("collapsed");
+    });
+  }
+}
+
+const FIGURE_BANK = {
+  "design-09": {
+    title: "4 皇后：解空间树、搜索树与可行解",
+    figures: [
+      { src: "assets/diagrams/4queens-solution-space-tree.svg", caption: "解空间树：按行 1→4 依次选列，每层最多 4 个分支；叶结点为 (c1,c2,c3,c4)。" },
+      { src: "assets/diagrams/4queens-search-tree.svg", caption: "搜索空间树：回溯 DFS 实际路径，✕ 表示约束剪枝；绿色路径到达解 (2,4,1,3)。" },
+      { src: "assets/diagrams/4queens-solutions.svg", caption: "两个可行解棋盘：解1 (2,4,1,3)，解2 (3,1,4,2)。" }
+    ]
+  },
+  "design-10": {
+    title: "0-1 背包解空间树（子集树）",
+    figures: [
+      { src: "assets/docx/summary_image2.png", caption: "3 物品 0-1 背包子集树：边标 1=选、0=不选；分支限界/回溯均在此树上搜索。" }
+    ]
+  },
+  "design-11": {
+    title: "0-1 背包解空间树与搜索示意",
+    figures: [
+      { src: "assets/docx/summary_image2.png", caption: "n=3 时解空间为 3 层子集树；w={20,15,10}, C=25 时搜索剪去超重分支，最优选物品 2、3。" }
+    ]
+  },
+  "design-15": {
+    title: "子集树、排列树与 4 皇后",
+    figures: [
+      { src: "assets/docx/summary_image2.png", caption: "子集树：0-1 背包、装载问题（每层 0/1 决策）。" },
+      { src: "assets/docx/summary_image3.png", caption: "排列树：TSP、任务分配、批处理调度（n! 叶结点）。" },
+      { src: "assets/diagrams/4queens-solution-space-tree.svg", caption: "4 皇后：按行选列的解空间树（排列树加约束）。" },
+      { src: "assets/diagrams/4queens-solutions.svg", caption: "4 皇后可行解棋盘示意。" }
+    ]
+  }
+};
+
+function renderAnswerFigures(q, reveal) {
+  const host = document.getElementById("answerFigures");
+  if (!host) return;
+  const pack = q && FIGURE_BANK[q.id];
+  if (!pack || !reveal) {
+    host.innerHTML = "";
+    host.hidden = true;
+    return;
+  }
+  host.hidden = false;
+  host.innerHTML = `<h4>${escapeHtml(pack.title)}</h4>` +
+    pack.figures.map((f) => {
+      const isSvg = /\.svg$/i.test(f.src);
+      const inner = isSvg
+        ? `<object type="image/svg+xml" data="${escapeAttr(f.src)}" aria-label="${escapeAttr(f.caption)}"><img src="${escapeAttr(f.src)}" alt="${escapeAttr(f.caption)}" loading="lazy" /></object>`
+        : `<img src="${escapeAttr(f.src)}" alt="${escapeAttr(f.caption)}" loading="lazy" />`;
+      return `<figure class="answer-figure">${inner}<figcaption>${escapeHtml(f.caption)}</figcaption></figure>`;
+    }).join("");
+}
+
+// ── 知识点库（摘自复习提要） ──
+const KNOWLEDGE_TOPICS = [
+  { id: "complexity", keys: ["复杂度", "复杂性", "O(", "渐近", "时间复杂度", "空间复杂度", "冒泡", "阶"], title: "算法复杂度", summary: "用时间/空间随输入规模 n 的增长趋势衡量算法效率，常忽略低阶项与常数。", points: ["常见阶：O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)", "分三种：最坏、最好、平均情况", "递归式可用主定理或展开法分析"] },
+  { id: "divide", keys: ["分治", "二分", "归并", "合并排序", "快速排序", "Strassen", "棋盘覆盖", "大整数", "循环赛", "子段和"], title: "分治策略", summary: "将问题分解为规模更小的同类子问题，递归求解后合并结果。", points: ["适用：子问题独立、可递归、合并代价可接受", "典型：二分搜索、归并/快排、棋盘覆盖", "分治递归常自顶向下；填表型 DP 常自底向上"] },
+  { id: "dp", keys: ["动态规划", "备忘录", "LCS", "公共子序列", "背包", "数塔", "编辑距离", "矩阵连乘", "最大子段"], title: "动态规划", summary: "将多阶段决策拆成重叠子问题，保存子问题最优解避免重复计算。", points: ["两要素：最优子结构 + 重叠子问题", "四步骤：定性质 → 写递推 → 自底向上求值 → 构造解", "与贪心区别：DP 需考虑多种子问题组合"] },
+  { id: "greedy", keys: ["贪心", "哈夫曼", "Huffman", "活动安排", "最小生成", "Kruskal", "Prim", "Dijkstra", "最短路径"], title: "贪心算法", summary: "每步做当前看起来最优的局部选择，期望得到全局最优。", points: ["核心：贪心选择性质 + 最优子结构", "典型：活动安排、哈夫曼编码、部分背包", "0-1 背包一般不能简单贪心"] },
+  { id: "backtrack", keys: ["回溯", "N皇后", "皇后", "排列", "子集树", "排列树", "深度优先"], title: "回溯法", summary: "在解空间树中深度优先搜索，用约束与剪枝函数排除无效分支。", points: ["解空间：子集树 / 排列树 / 一般树", "剪枝：限界函数 + 约束函数", "与分支限界区别：回溯常求全部/一组解，一次深度扩展"] },
+  { id: "branch", keys: ["分支限界", "分支界限", "活结点", "最大效益", "最小耗费", "优先队列", "TSP", "旅行售货"], title: "分支限界法", summary: "在状态空间树上按广度或优先队列扩展活结点，用界函数剪枝。", points: ["常见：FIFO 队列式、优先队列式（最大/最小堆）", "最大效益优先 → 最大堆；最小耗费 → 最小堆", "适合求单条最优路径/最优值问题"] },
+  { id: "search", keys: ["二分搜索", "二分查找", "BinarySearch"], title: "二分搜索", summary: "在有序序列中每次排除一半元素，属于分治思想。", points: ["前提：数据有序", "时间复杂度 O(log n)", "三要素：left、right、mid 指针维护区间"] },
+  { id: "sort", keys: ["排序", "冒泡", "插入排序"], title: "排序算法", summary: "将元素按关键字排列；不同算法时间/空间复杂度差异大。", points: ["归并/快排是分治代表", "冒泡最坏 O(n²)，适合理解复杂度分析", "稳定性与原地性是选型参考"] },
+  { id: "recursive", keys: ["递推", "递归", "Fibonacci", "斐波那契", "错装信封"], title: "递推与递归", summary: "用先前状态推导当前状态；递归是直接或间接调用自身。", points: ["递推常自底向上；递归常自顶向下", "备忘录 = 自顶向下 + 记忆化", "注意递归出口与重复计算"] },
+  { id: "brute", keys: ["蛮力", "穷举", "百元买百鸡", "串匹配"], title: "蛮力法", summary: "枚举所有可能方案并逐一检验，简单但可能指数级耗时。", points: ["适合规模小或作为基准", "可配合剪枝减少枚举", "最近点对、串匹配都可用蛮力"] },
+  { id: "graph", keys: ["生成树", "Kruskal", "图着色", "哈夫曼树"], title: "图与编码", summary: "图论问题常结合贪心、动态规划或搜索。", points: ["最小生成树：Kruskal / Prim", "哈夫曼编码：贪心构造最优前缀码", "复杂图问题常需启发式或近似"] },
+  { id: "design", keys: ["算法设计", "设计题", "伪代码", "步骤"], title: "算法设计", summary: "根据问题选合适设计技术并分析正确性与复杂度。", points: ["常用技术：分治、DP、贪心、回溯、分支限界", "先建模 → 选策略 → 写步骤 → 估复杂度", "注意边界条件与输入规模"] }
+];
+
+
+const TOPIC_CHAPTER_MAP = {
+  complexity: "foundation", recursive: "recursion", divide: "divide", dp: "dp",
+  greedy: "greedy", backtrack: "backtrack", branch: "branch", search: "decrease",
+  sort: "divide", brute: "brute", graph: "greedy", design: "cheatsheet"
+};
+
+function openReviewChapter(chapterId) {
+  const chapters = reviewChapters();
+  const idx = chapters.findIndex(c => c.id === chapterId);
+  if (idx < 0) return;
+  app.mode = "review";
+  app.status = "all";
+  app.reviewIndex = idx;
+  app.reviewQuery = "";
+  app.index = 0;
+  render();
+  closeDrawerOnMobile();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+window.openReviewChapter = openReviewChapter;
+
+function matchKnowledge(q) {
+  const blob = [q.section, q.title, q.prompt, q.answer, q.analysis, ...(q.options || []).map(o => o.text)].filter(Boolean).join(" ");
+  let best = null, bestScore = 0;
+  for (const topic of KNOWLEDGE_TOPICS) {
+    let score = 0;
+    for (const key of topic.keys) if (blob.includes(key)) score += key.length;
+    if (score > bestScore) { bestScore = score; best = topic; }
+  }
+  if (best) return best;
+  const sectionMap = {
+    "选择题": KNOWLEDGE_TOPICS.find(t => t.id === "design"),
+    "填空题": KNOWLEDGE_TOPICS.find(t => t.id === "design"),
+    "算法填空": KNOWLEDGE_TOPICS.find(t => t.id === "divide"),
+    "问答题": KNOWLEDGE_TOPICS.find(t => t.id === "design"),
+    "算法设计与分析题": KNOWLEDGE_TOPICS.find(t => t.id === "design")
+  };
+  return sectionMap[q.section] || KNOWLEDGE_TOPICS[0];
+}
+
+let fillCheckTimer = null;
+let toastTimer = null;
+
+function defaultSettings() {
+  return { autoAdvance: true, showKnowledge: true, peekKnowledge: false };
+}
+
+function mergeSettings(raw) {
+  return { ...defaultSettings(), ...(raw || {}) };
+}
+
+function showToast(msg, ms = 1800) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), ms);
+}
+
+function syncSettingsUI() {
+  const s = app.settings || defaultSettings();
+  const a = document.getElementById("setAutoAdvance");
+  const k = document.getElementById("setShowKnowledge");
+  const p = document.getElementById("setPeekKnowledge");
+  if (a) a.checked = !!s.autoAdvance;
+  if (k) k.checked = !!s.showKnowledge;
+  if (p) p.checked = !!s.peekKnowledge;
+}
+
+function setSetting(key, val) {
+  app.settings = mergeSettings(app.settings);
+  app.settings[key] = val;
+  saveState();
+  syncSettingsUI();
+}
+
+function renderKnowledgePanel(q, rec, reveal) {
+  const panel = document.getElementById("knowledgePanel");
+  const peek = document.getElementById("knowledgePeek");
+  const peekBtn = document.getElementById("knowledgePeekBtn");
+  if (!panel) return;
+  const topic = matchKnowledge(q);
+  const s = app.settings || defaultSettings();
+  const show = (reveal && s.showKnowledge) || rec.knowledgeOpen;
+  const canPeek = !reveal && s.peekKnowledge && app.mode === "practice";
+
+  if (peek) peek.hidden = !canPeek;
+  if (peekBtn && !peekBtn.dataset.bound) {
+    peekBtn.dataset.bound = "1";
+    peekBtn.addEventListener("click", () => {
+      const qq = currentQuestion();
+      if (!qq) return;
+      recordFor(qq.id).knowledgeOpen = true;
+      render();
+    });
+  }
+
+  if (!show) {
+    panel.classList.add("hidden");
+    return;
+  }
+
+  const chapterId = TOPIC_CHAPTER_MAP[topic.id];
+  document.getElementById("knowledgeTag").textContent = topic.title;
+  document.getElementById("knowledgeSummary").textContent = topic.summary;
+  document.getElementById("knowledgePoints").innerHTML = topic.points.map(p => `<li>${escapeHtml(p)}</li>`).join("")
+    + (chapterId ? `<li><button type="button" class="knowledge-peek-btn" style="margin-top:6px" onclick="openReviewChapter('${chapterId}')">查看完整章节复习 →</button></li>` : "");
+  panel.classList.remove("hidden");
+}
+
+function updateKeyboardHint(q) {
+  let hint = document.getElementById("keyboardHint");
+  if (!hint) {
+    hint = document.createElement("p");
+    hint.id = "keyboardHint";
+    hint.className = "keyboard-hint";
+    els.questionCard.appendChild(hint);
+  }
+  if (q && q.type === "choice" && app.mode === "practice") {
+    hint.textContent = "快捷键：A/B/C/D 或 1-4 选择，← → 切题，空格查看答案";
+    hint.style.display = "block";
+  } else if (q && (q.type === "fill" || q.type === "code")) {
+    hint.textContent = "题干下划线为空位，请在下方答题区填写；Enter 提交";
+    hint.style.display = "block";
+  } else {
+    hint.style.display = "none";
+  }
+}
+
+let app = loadState();
+let autoNextTimer = 0;
+let swipeStart = null;
+
+function loadState() {
+  const fallback = {
+    mode: "practice",
+    section: "全部题型",
+    status: "all",
+    query: "",
+    index: 0,
+    records: {},
+    marked: {},
+    settings: defaultSettings(),
+    reviewIndex: 0,
+    reviewQuery: "",
+    reviewCollapsed: false
+  };
+  try {
+    const saved = { ...fallback, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+    saved.settings = mergeSettings(saved.settings);
+    return saved;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(app));
+}
+
+function recordFor(id) {
+  if (!app.records[id]) {
+    app.records[id] = { attempts: 0, revealed: false, correct: null, mastered: null, knowledgeOpen: false };
+  }
+  return app.records[id];
+}
+
+function filteredQuestions() {
+  const query = app.query.trim().toLowerCase();
+  return questions.filter((q) => {
+    const rec = app.records[q.id];
+    const marked = Boolean(app.marked[q.id]);
+    const done = Boolean(rec && (rec.revealed || rec.mastered !== null || rec.correct !== null));
+    const wrong = Boolean(rec && (rec.correct === false || rec.mastered === false));
+    if (app.section !== "全部题型" && q.section !== app.section) return false;
+    if (app.status === "marked" && !marked) return false;
+    if (app.status === "wrong" && !wrong) return false;
+    if (app.status === "unanswered" && done) return false;
+    if (app.status === "done" && !done) return false;
+    if (!query) return true;
+    return [q.title, q.prompt, q.answer, q.analysis, q.section]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .includes(query);
+  });
+}
+
+function initFilters() {
+  const sections = ["全部题型", ...new Set(questions.map((q) => q.section))];
+  els.sectionFilter.innerHTML = sections.map((section) => {
+    return `<option value="${escapeAttr(section)}">${section}</option>`;
+  }).join("");
+  els.sectionFilter.value = app.section;
+  els.statusFilter.value = app.status;
+  els.searchInput.value = app.query;
+  els.sourceText.textContent = `${bank.meta.source || "本地文档"} · ${questions.length} 题`;
+}
+
+function render() {
+  if (app.mode === "review") {
+    renderMode();
+    renderReviewMode();
+    saveState();
+    return;
+  }
+  document.body.classList.remove("mode-review");
+  const list = filteredQuestions();
+  if (app.index >= list.length) app.index = Math.max(0, list.length - 1);
+  renderStats();
+  renderMode();
+  renderNav(list);
+  if (!list.length) {
+    renderEmpty();
+    saveState();
+    return;
+  }
+  renderQuestion(list[app.index], list);
+  saveState();
+}
+
+function renderStats() {
+  const records = Object.values(app.records);
+  const done = questions.filter((q) => {
+    const rec = app.records[q.id];
+    return rec && (rec.revealed || rec.mastered !== null || rec.correct !== null);
+  }).length;
+  const checked = records.filter((rec) => rec.correct !== null);
+  const correct = checked.filter((rec) => rec.correct === true).length;
+  const accuracy = checked.length ? Math.round((correct / checked.length) * 100) : 0;
+  els.statTotal.textContent = questions.length;
+  els.statDone.textContent = done;
+  els.statAccuracy.textContent = `${accuracy}%`;
+  els.statMarked.textContent = Object.keys(app.marked).length;
+}
+
+function renderMode() {
+  els.modeTabs.forEach((btn) => {
+    const mode = btn.dataset.mode;
+    const status = btn.dataset.status;
+    const isActive = Boolean((mode && app.mode === mode && app.status === "all") || (status && app.status === status));
+    btn.classList.toggle("active", isActive);
+  });
+  const titles = {
+    practice: "刷题模式",
+    memorize: "背题模式",
+    review: "知识点复习"
+  };
+  els.pageTitle.textContent = app.status === "wrong" ? "错题本" : app.status === "marked" ? "标记题" : (titles[app.mode] || "刷题模式");
+}
+
+function renderNav(list) {
+  els.questionNav.innerHTML = list.map((q, idx) => {
+    const rec = app.records[q.id];
+    const done = rec && (rec.revealed || rec.mastered !== null || rec.correct !== null);
+    const wrong = rec && (rec.correct === false || rec.mastered === false);
+    const marked = app.marked[q.id];
+    const classes = ["nav-item", idx === app.index ? "active" : "", done ? "done" : "", wrong ? "wrong" : "", marked ? "marked" : ""].join(" ");
+    return `<button class="${classes}" data-index="${idx}" title="${escapeAttr(q.title)}" aria-current="${idx === app.index ? "true" : "false"}">${shortLabel(q)}</button>`;
+  }).join("");
+}
+
+function renderEmpty() {
+  els.questionTitle.textContent = "没有匹配的题目";
+  els.questionPrompt.className = "prompt";
+  els.questionPrompt.textContent = "";
+  els.typeBadge.textContent = "空";
+  els.progressText.textContent = "0 / 0";
+  els.progressBar.style.width = "0%";
+  els.choiceArea.innerHTML = "";
+  els.fillArea.style.display = "none";
+  els.fillArea.classList.remove("active");
+  els.subjectiveArea.style.display = "none";
+  els.answerPanel.classList.remove("visible");
+  els.answerPanel.classList.remove("floating");
+  els.resultLine.textContent = "";
+  els.questionImage.style.display = "none";
+  els.prevBtn.disabled = true;
+  els.nextBtn.disabled = true;
+  els.showAnswerBtn.textContent = "查看答案";
+  const kp = document.getElementById("knowledgePanel"); if (kp) kp.classList.add("hidden");
+  const af = document.getElementById("answerFigures"); if (af) { af.innerHTML = ""; af.hidden = true; }
+  const pk = document.getElementById("knowledgePeek"); if (pk) pk.hidden = true;
+  els.questionNav.innerHTML = `<div class="empty">当前筛选下没有题目。</div>`;
+}
+
+function renderQuestion(q, list) {
+  const rec = recordFor(q.id);
+  const reveal = app.mode === "memorize" || rec.revealed;
+  els.typeBadge.textContent = q.section;
+  els.progressText.textContent = `${app.index + 1} / ${list.length}`;
+  els.progressBar.style.width = `${Math.round(((app.index + 1) / list.length) * 100)}%`;
+  els.questionTitle.textContent = q.title;
+  if (q.type === "fill" || q.type === "code") {
+    renderFillPrompt(q, rec, reveal);
+  } else {
+    els.questionPrompt.className = "prompt";
+    els.questionPrompt.textContent = toChineseParens(q.prompt || q.title);
+  }
+  els.answerText.textContent = q.answer || "暂无答案";
+  els.analysisText.textContent = q.analysis || "暂无解析";
+  const answerDismissed = rec.correct === false && rec.answerDismissed;
+  els.answerPanel.classList.toggle("visible", reveal && !answerDismissed);
+  els.answerPanel.classList.toggle("floating", reveal && rec.correct === false && !answerDismissed);
+  els.resultLine.textContent = resultText(rec);
+  els.resultLine.className = `result-line ${rec.correct === true || rec.mastered === true ? "ok" : rec.correct === false || rec.mastered === false ? "bad" : ""}`;
+  els.markBtn.classList.toggle("active", Boolean(app.marked[q.id]));
+  els.markBtn.setAttribute("aria-pressed", String(Boolean(app.marked[q.id])));
+  els.markIcon.textContent = app.marked[q.id] ? "★" : "☆";
+  els.prevBtn.disabled = app.index === 0;
+  els.nextBtn.disabled = app.index === list.length - 1;
+  els.showAnswerBtn.textContent = reveal ? "已显示答案" : "查看答案";
+
+  if (q.image) {
+    els.questionImage.src = q.image;
+    els.questionImage.style.display = "block";
+  } else {
+    els.questionImage.removeAttribute("src");
+    els.questionImage.style.display = "none";
+  }
+
+  renderAnswerInput(q, rec, reveal);
+  renderKnowledgePanel(q, rec, reveal);
+  renderAnswerFigures(q, reveal);
+  updateKeyboardHint(q);
+}
+
+function renderAnswerInput(q, rec, reveal) {
+  els.choiceArea.innerHTML = "";
+  els.fillArea.style.display = "none";
+  els.fillArea.classList.remove("active");
+  els.subjectiveArea.style.display = "none";
+
+  if (q.type === "choice") {
+    els.choiceArea.innerHTML = (q.options || []).map((option) => {
+      const selected = rec.selected === option.key;
+      const isCorrect = option.key === q.answer;
+      const classes = ["option-btn"];
+      if (selected) classes.push("selected");
+      if (reveal && isCorrect) classes.push("correct");
+      if (reveal && selected && !isCorrect) classes.push("wrong");
+      return `<button class="${classes.join(" ")}" data-option="${option.key}" aria-pressed="${selected}">
+        <span class="option-key">${option.key}</span>
+        <span>${escapeHtml(option.text)}</span>
+      </button>`;
+    }).join("");
+    return;
+  }
+
+  if (q.type === "fill" || q.type === "code") {
+    els.fillArea.style.display = "grid";
+    els.fillArea.classList.add("active");
+    if (els.fillInput) els.fillInput.value = rec.input || "";
+    return;
+  }
+
+  els.subjectiveArea.style.display = "grid";
+  els.memoryInput.value = rec.draft || "";
+}
+
+function resultText(rec) {
+  if (!rec) return "";
+  if (rec.correct === true) return "回答正确";
+  if (rec.correct === false) return "回答有误，已加入错题本";
+  if (rec.mastered === true) return "已标记为会了";
+  if (rec.mastered === false) return "已标记为不会，已加入错题本";
+  return "";
+}
+
+function chooseOption(key) {
+  const q = currentQuestion();
+  if (!q) return;
+  const rec = recordFor(q.id);
+  if (app.mode === "practice" && rec.revealed && rec.correct !== null) return;
+  rec.selected = key;
+  rec.correct = key === q.answer;
+  rec.revealed = true;
+  rec.answerDismissed = false;
+  rec.attempts += 1;
+  rec.lastAt = Date.now();
+  render();
+  if (rec.correct) { launchCorrectSurprise(); scheduleAutoNext(true); }
+  else showToast("已加入错题本，看看知识点再试");
+}
+
+function submitFill() {
+  const q = currentQuestion();
+  if (!q) return;
+  const rec = recordFor(q.id);
+  if (app.mode === "practice" && rec.revealed && rec.correct !== null) return;
+  const raw = els.fillInput ? els.fillInput.value.trim() : "";
+  rec.input = raw;
+  rec.correct = isFillCorrect(collectFillValues(), q.answer);
+  rec.revealed = true;
+  rec.answerDismissed = false;
+  rec.attempts += 1;
+  rec.lastAt = Date.now();
+  render();
+  if (rec.correct) { launchCorrectSurprise(); scheduleAutoNext(true); }
+  else showToast("已加入错题本，看看知识点再试");
+}
+
+function launchCorrectSurprise() {
+  const layer = document.createElement("div");
+  layer.className = "confetti-burst";
+  const pop = document.createElement("div");
+  pop.className = "correct-pop";
+  pop.innerHTML = "<strong>答对啦</strong><span>马上进入下一题</span>";
+  layer.appendChild(pop);
+  const colors = ["#1f7a5a", "#65a97f", "#f2c46d", "#e9865f", "#7fb7a0"];
+  for (let i = 0; i < 42; i += 1) {
+    const piece = document.createElement("span");
+    piece.style.setProperty("--x", `${Math.random() * 100}vw`);
+    piece.style.setProperty("--dx", `${Math.random() * 80 - 40}px`);
+    piece.style.setProperty("--rot", `${Math.random() * 540 - 270}deg`);
+    piece.style.setProperty("--delay", `${Math.random() * 0.18}s`);
+    piece.style.setProperty("--color", colors[i % colors.length]);
+    layer.appendChild(piece);
+  }
+  document.body.appendChild(layer);
+  window.setTimeout(() => layer.remove(), 1500);
+}
+
+
+const FILL_BLANK_RE = /（\s*）|\(\s*\)|_{2,}|\s{3,}/g;
+
+function toChineseParens(text) {
+  return String(text || "")
+    .replace(/\(\s*\)/g, "（　　）")
+    .replace(/（\s*）/g, "（　　）");
+}
+
+function underlineHtml(wide) {
+  const cls = ["fill-uline", wide ? "wide" : ""].filter(Boolean).join(" ");
+  return `<span class="${cls}" aria-hidden="true"></span>`;
+}
+
+function codeBlankHtml(block, wide) {
+  if (block) return `<span class="code-blank code-blank-line" aria-hidden="true"></span>`;
+  const cls = ["code-blank", wide ? "wide" : ""].filter(Boolean).join(" ");
+  return `<span class="${cls}" aria-hidden="true"></span>`;
+}
+
+const CODE_KW_RE = /\b(template|class|void|int|float|if|else|for|while|return|const|Type|Template)\b/g;
+
+function highlightCodeText(text) {
+  let out = escapeHtml(toChineseParens(text));
+  out = out.replace(/(\/\/[^\n]*)/g, '<span class="code-cmt">$1</span>');
+  out = out.replace(CODE_KW_RE, '<span class="code-kw">$1</span>');
+  out = out.replace(/\b(\d+)\b/g, '<span class="code-num">$1</span>');
+  return out;
+}
+
+function looksLikeCodeLine(line) {
+  const s = String(line || "").trim();
+  if (!s) return false;
+  if (/^(template|void|int|for\s*\(|if\s*\(|while\s*\(|return\b|else\b|#include|using\s|class\s|Template)/i.test(s)) return true;
+  if (/[{};<>]/.test(s)) return true;
+  return /^\w[\w\s*<>,]*\([^)]*\)\s*[{;]?/.test(s);
+}
+
+function splitCodePrompt(prompt, title) {
+  const lines = String(prompt || "").split("\n");
+  const codeStartIdx = lines.findIndex((line) => looksLikeCodeLine(line));
+  if (codeStartIdx <= 0) {
+    return {
+      intro: codeStartIdx === -1 ? lines.join("\n").trim() : "",
+      code: codeStartIdx === -1 ? "" : lines.join("\n"),
+    };
+  }
+  let intro = lines.slice(0, codeStartIdx).join("\n").trim();
+  const norm = (s) => String(s || "").replace(/\s+/g, "").replace(/[.．、]/g, "");
+  if (intro && norm(intro) === norm(title)) intro = "";
+  return { intro, code: lines.slice(codeStartIdx).join("\n") };
+}
+
+function renderBlankSegment(seg, type) {
+  const wide = Boolean(seg.block);
+  if (type === "code") return codeBlankHtml(wide, wide);
+  return underlineHtml(wide);
+}
+
+function renderSegmentsHtml(segments, type) {
+  return segments.map((seg) => {
+    if (seg.type === "text") {
+      return type === "code" ? highlightCodeText(seg.text) : escapeHtml(toChineseParens(seg.text));
+    }
+    return renderBlankSegment(seg, type);
+  }).join("");
+}
+
+function parseAnswerParts(answer) {
+  return String(answer || "").split(/[;；]/).map((s) => s.trim()).filter(Boolean);
+}
+
+function parseFillSegments(prompt, type) {
+  const segments = [];
+  if (type === "code") {
+    const lines = String(prompt || "").split("\n");
+    let blankIndex = 0;
+    lines.forEach((line, lineIdx) => {
+      if (/^\s*;\s*$/.test(line)) {
+        const indent = line.match(/^\s*/)[0] || "";
+        if (indent) segments.push({ type: "text", text: indent });
+        segments.push({ type: "blank", index: blankIndex++, block: true });
+        if (lineIdx < lines.length - 1) segments.push({ type: "text", text: "\n" });
+        return;
+      }
+      let last = 0;
+      const re = /（\s*）|\(\s{2,}\)|\(\s*\)|_{2,}|(?<=\S)\s{3,}(?=;|\s*$)/g;
+      let m;
+      while ((m = re.exec(line)) !== null) {
+        if (m.index > last) segments.push({ type: "text", text: line.slice(last, m.index) });
+        segments.push({ type: "blank", index: blankIndex++, block: /\(\s{2,}\)/.test(m[0]) });
+        last = re.lastIndex;
+      }
+      if (last < line.length) segments.push({ type: "text", text: line.slice(last) });
+      if (lineIdx < lines.length - 1) segments.push({ type: "text", text: "\n" });
+    });
+    return segments;
+  }
+  let lastIndex = 0;
+  let blankIndex = 0;
+  const re = new RegExp(FILL_BLANK_RE.source, "g");
+  let m;
+  while ((m = re.exec(prompt)) !== null) {
+    if (m.index > lastIndex) segments.push({ type: "text", text: prompt.slice(lastIndex, m.index) });
+    segments.push({ type: "blank", index: blankIndex++ });
+    lastIndex = re.lastIndex;
+  }
+  if (lastIndex < prompt.length) segments.push({ type: "text", text: prompt.slice(lastIndex) });
+  if (!segments.some((s) => s.type === "blank")) {
+    segments.push({ type: "text", text: prompt });
+    segments.push({ type: "blank", index: 0 });
+  }
+  return segments;
+}
+
+function getFillValues(rec) {
+  if (Array.isArray(rec.fillValues)) return rec.fillValues;
+  if (!rec.input) return [];
+  return rec.input.split(/[;；]/).map((s) => s.trim());
+}
+
+function setFillValues(rec, values) {
+  rec.fillValues = values;
+  rec.input = values.join("；");
+}
+
+function collectFillValues() {
+  if (!els.fillInput) return [];
+  const raw = els.fillInput.value.trim();
+  if (!raw) return [];
+  return raw.split(/[;；]/).map((s) => s.trim()).filter(Boolean);
+}
+
+function isSingleFillCorrect(input, expected) {
+  const val = normalize(input);
+  if (!val) return false;
+  return String(expected || "")
+    .split(/[/／|]/)
+    .map((s) => normalize(s))
+    .filter(Boolean)
+    .some((alt) => val === alt || val.includes(alt) || alt.includes(val));
+}
+
+function isFillAnswersCorrect(values, answer) {
+  const parts = parseAnswerParts(answer);
+  if (!parts.length) return false;
+  if (values.length < parts.length) return false;
+  return parts.every((part, i) => isSingleFillCorrect(values[i] || "", part));
+}
+
+function renderFillPrompt(q, rec, reveal) {
+  const parts = parseAnswerParts(q.answer);
+  const hint = document.getElementById("fillHint");
+
+  if (q.type === "code") {
+    const { intro, code } = splitCodePrompt(q.prompt, q.title);
+    const segments = parseFillSegments(code || q.prompt, "code");
+    const blankTotal = Math.max(segments.filter((s) => s.type === "blank").length, parts.length, 1);
+    const codeHtml = renderSegmentsHtml(segments, "code");
+
+    els.questionPrompt.className = "prompt code-fill-wrap";
+    els.questionPrompt.innerHTML =
+      (intro ? `<p class="code-intro">${escapeHtml(toChineseParens(intro))}</p>` : "") +
+      `<pre class="code-block"><code>${codeHtml}</code></pre>`;
+
+    if (hint) {
+      hint.textContent = blankTotal > 1
+        ? `本题共 ${blankTotal} 空，请在下方答题区填写，多个空用中文分号「；」分隔。`
+        : "请在下方的答题区填写答案。";
+    }
+    return;
+  }
+
+  const segments = parseFillSegments(q.prompt, q.type);
+  const blankTotal = Math.max(segments.filter((s) => s.type === "blank").length, parts.length, 1);
+
+  els.questionPrompt.className = "prompt fill-prompt";
+  els.questionPrompt.innerHTML = renderSegmentsHtml(segments, "fill");
+
+  if (hint) {
+    hint.textContent = blankTotal > 1
+      ? `本题共 ${blankTotal} 空，请在下方的答题区填写，多个空用中文分号「；」分隔。`
+      : "请在下方的答题区填写答案。";
+  }
+}
+
+function syncFillInputsToRecord() {
+  const q = currentQuestion();
+  if (!q || (q.type !== "fill" && q.type !== "code")) return;
+  const rec = recordFor(q.id);
+  rec.input = els.fillInput ? els.fillInput.value.trim() : "";
+  saveState();
+}
+
+function checkFillDebounced() {
+  clearTimeout(fillCheckTimer);
+  fillCheckTimer = setTimeout(() => {
+    const q = currentQuestion();
+    if (!q || (q.type !== "fill" && q.type !== "code")) return;
+    const rec = recordFor(q.id);
+    if (rec.revealed && rec.correct !== null) return;
+    const raw = els.fillInput ? els.fillInput.value.trim() : "";
+    if (!raw) return;
+    const values = collectFillValues();
+    const parts = parseAnswerParts(q.answer);
+    if (values.length < parts.length) return;
+    if (!isFillAnswersCorrect(values, q.answer)) return;
+    rec.input = raw;
+    rec.correct = true;
+    rec.revealed = true;
+    rec.answerDismissed = false;
+    rec.attempts += 1;
+    rec.lastAt = Date.now();
+    render();
+    launchCorrectSurprise();
+    scheduleAutoNext(true);
+  }, 700);
+}
+
+function isFillCorrect(input, answer) {
+  const values = Array.isArray(input)
+    ? input
+    : String(input || "").split(/[;；]/).map((s) => s.trim());
+  return isFillAnswersCorrect(values, answer);
+}
+
+function normalize(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/[，,；;。.\-_/、：:（）()]/g, "");
+}
+
+function showAnswer() {
+  const q = currentQuestion();
+  if (!q) return;
+  const rec = recordFor(q.id);
+  if (q.type === "fill" || q.type === "code") rec.input = els.fillInput ? els.fillInput.value.trim() : "";
+  if (q.type !== "choice" && q.type !== "fill") rec.draft = els.memoryInput.value;
+  rec.revealed = true;
+  rec.answerDismissed = false;
+  rec.lastAt = Date.now();
+  render();
+}
+
+function markMastered(mastered) {
+  const q = currentQuestion();
+  if (!q) return;
+  const rec = recordFor(q.id);
+  if (q.type !== "choice" && q.type !== "fill") rec.draft = els.memoryInput.value;
+  rec.mastered = mastered;
+  rec.revealed = true;
+  rec.lastAt = Date.now();
+  if (q.type !== "choice" && q.type !== "fill") rec.correct = mastered;
+  render();
+}
+
+function toggleMark() {
+  const q = currentQuestion();
+  if (!q) return;
+  if (app.marked[q.id]) delete app.marked[q.id];
+  else app.marked[q.id] = Date.now();
+  render();
+}
+
+function currentQuestion() {
+  return filteredQuestions()[app.index];
+}
+
+function dismissFloatingAnswer() {
+  const q = currentQuestion();
+  if (!q) return;
+  const rec = recordFor(q.id);
+  if (rec.correct !== false) return;
+  rec.answerDismissed = true;
+  saveState();
+  els.answerPanel.classList.remove("visible", "floating");
+}
+
+function go(delta) {
+  clearAutoNext();
+  clearTimeout(fillCheckTimer);
+  dismissFloatingAnswer();
+  const q = currentQuestion();
+  if (q) recordFor(q.id).knowledgeOpen = false;
+  const list = filteredQuestions();
+  if (!list.length) return;
+  app.index = Math.min(Math.max(app.index + delta, 0), list.length - 1);
+  render();
+}
+
+function shuffle() {
+  clearAutoNext();
+  const list = filteredQuestions();
+  if (!list.length) return;
+  app.index = Math.floor(Math.random() * list.length);
+  render();
+}
+
+function isMobileViewport() {
+  return window.matchMedia("(max-width: 900px)").matches;
+}
+
+function setDrawer(open) {
+  document.body.classList.toggle("drawer-open", open);
+  els.mobileMenuBtn.setAttribute("aria-expanded", String(open));
+  els.mobileMenuBtn.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+  els.drawerOverlay.hidden = !open;
+}
+
+function toggleDrawer() {
+  setDrawer(!document.body.classList.contains("drawer-open"));
+}
+
+function closeDrawerOnMobile() {
+  if (isMobileViewport()) setDrawer(false);
+}
+
+function clearAutoNext() {
+  window.clearTimeout(autoNextTimer);
+}
+
+function scheduleAutoNext(isCorrect) {
+  clearAutoNext();
+  const list = filteredQuestions();
+  const s = app.settings || defaultSettings();
+  if (!isCorrect || app.mode !== "practice" || !s.autoAdvance || app.index >= list.length - 1) return;
+  autoNextTimer = window.setTimeout(() => go(1), isMobileViewport() ? 1350 : 900);
+}
+
+function bindSwipeNavigation() {
+  els.questionCard.addEventListener("touchstart", (event) => {
+    if (!isMobileViewport() || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    swipeStart = {
+      x: touch.clientX,
+      y: touch.clientY,
+      at: Date.now()
+    };
+  }, { passive: true });
+
+  els.questionCard.addEventListener("touchend", (event) => {
+    if (!swipeStart || !isMobileViewport()) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - swipeStart.x;
+    const deltaY = touch.clientY - swipeStart.y;
+    const elapsed = Date.now() - swipeStart.at;
+    swipeStart = null;
+    if (elapsed > 700 || Math.abs(deltaX) < 70 || Math.abs(deltaY) > 55) return;
+    go(deltaX < 0 ? 1 : -1);
+  }, { passive: true });
+}
+
+function resetRecords() {
+  const ok = confirm("确认重新刷题？会清空答题记录、错题和标记，题库不会删除。");
+  if (!ok) return;
+  app.records = {};
+  app.marked = {};
+  app.index = 0;
+  render();
+}
+
+function shortLabel(q) {
+  const prefix = {
+    "选择题": "选",
+    "填空题": "填",
+    "算法填空": "算",
+    "问答题": "问",
+    "算法设计与分析题": "设"
+  }[q.section] || "题";
+  return `${prefix}${q.number}`;
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttr(text) {
+  return escapeHtml(text).replaceAll("\n", " ");
+}
+
+function bindEvents() {
+  els.modeTabs.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.mode) {
+        app.mode = btn.dataset.mode;
+        app.status = "all";
+        if (btn.dataset.mode === "review") app.reviewQuery = "";
+      }
+      if (btn.dataset.status) {
+        app.status = btn.dataset.status;
+        app.mode = btn.dataset.status === "marked" ? "memorize" : "practice";
+      }
+      app.index = 0;
+      els.statusFilter.value = app.status;
+      dismissFloatingAnswer();
+      render();
+      closeDrawerOnMobile();
+    });
+  });
+
+  els.sectionFilter.addEventListener("change", () => {
+    app.section = els.sectionFilter.value;
+    app.index = 0;
+    dismissFloatingAnswer();
+    render();
+    closeDrawerOnMobile();
+  });
+
+  els.statusFilter.addEventListener("change", () => {
+    app.status = els.statusFilter.value;
+    app.index = 0;
+    dismissFloatingAnswer();
+    render();
+    closeDrawerOnMobile();
+  });
+
+  els.searchInput.addEventListener("input", () => {
+    app.query = els.searchInput.value;
+    app.index = 0;
+    dismissFloatingAnswer();
+    render();
+  });
+
+  els.questionNav.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-index]");
+    if (!btn) return;
+    dismissFloatingAnswer();
+    app.index = Number(btn.dataset.index);
+    render();
+    closeDrawerOnMobile();
+  });
+
+  els.choiceArea.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-option]");
+    if (!btn) return;
+    chooseOption(btn.dataset.option);
+  });
+
+  els.submitFillBtn.addEventListener("click", submitFill);
+  els.answerPanel.addEventListener("click", () => {
+    if (els.answerPanel.classList.contains("floating")) dismissFloatingAnswer();
+  });
+  els.showAnswerBtn.addEventListener("click", showAnswer);
+  els.knownBtn.addEventListener("click", () => markMastered(true));
+  els.unknownBtn.addEventListener("click", () => markMastered(false));
+  els.prevBtn.addEventListener("click", () => go(-1));
+  els.nextBtn.addEventListener("click", () => go(1));
+  els.markBtn.addEventListener("click", toggleMark);
+  els.shuffleBtn.addEventListener("click", shuffle);
+  els.resetBtn.addEventListener("click", resetRecords);
+  els.restartBtn.addEventListener("click", resetRecords);
+  els.importFile.addEventListener("change", async () => {
+    const file = els.importFile.files && els.importFile.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      importQuestionBank(JSON.parse(text));
+    } catch (error) {
+      alert(`导入失败：${error.message}`);
+      if (els.importHint) els.importHint.textContent = "导入失败，请检查 JSON 格式";
+    } finally {
+      els.importFile.value = "";
+    }
+  });
+  els.restoreBankBtn.addEventListener("click", restoreDefaultBank);
+  els.mobileMenuBtn.addEventListener("click", toggleDrawer);
+  els.drawerOverlay.addEventListener("click", () => setDrawer(false));
+
+
+  els.fillInput.addEventListener("input", () => {
+    syncFillInputsToRecord();
+    checkFillDebounced();
+  });
+
+  els.fillInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") submitFill();
+  });
+
+  els.memoryInput.addEventListener("input", () => {
+    const q = currentQuestion();
+    if (!q) return;
+    recordFor(q.id).draft = els.memoryInput.value;
+    saveState();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.target.matches("textarea")) return;
+    if (event.target.matches("input") && event.key !== "Enter") return;
+    const q = currentQuestion();
+    if (q && q.type === "choice" && app.mode === "practice") {
+      const map = { a: "A", b: "B", c: "C", d: "D", "1": "A", "2": "B", "3": "C", "4": "D" };
+      const k = map[event.key.toLowerCase()];
+      if (k && q.options.some(o => o.key === k)) { event.preventDefault(); chooseOption(k); return; }
+    }
+    if (event.key === "ArrowLeft") go(-1);
+    if (event.key === "ArrowRight") go(1);
+    if (event.key === " ") {
+      event.preventDefault();
+      showAnswer();
+    }
+  });
+
+  ["setAutoAdvance", "setShowKnowledge", "setPeekKnowledge"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const key = { setAutoAdvance: "autoAdvance", setShowKnowledge: "showKnowledge", setPeekKnowledge: "peekKnowledge" }[id];
+    el.addEventListener("change", () => setSetting(key, el.checked));
+  });
+
+    bindSwipeNavigation();
+}
+
+initFilters();
+syncSettingsUI();
+bindEvents();
+bindReviewEvents();
+render();
+
+
+
+
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('algorithm-review-dark', document.body.classList.contains('dark') ? '1' : '0');
+}
+if (localStorage.getItem('algorithm-review-dark') === '1') document.body.classList.add('dark');
+window.toggleDarkMode = toggleDarkMode;
+
+</script>
+</body>
+</html>
