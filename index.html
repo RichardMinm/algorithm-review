@@ -6074,9 +6074,21 @@ const CODE_KW_RE = /\b(template|class|void|int|float|if|else|for|while|return|co
 
 function highlightCodeText(text) {
   let out = escapeHtml(toChineseParens(text));
-  out = out.replace(/(\/\/[^\n]*)/g, '<span class="code-cmt">$1</span>');
+  const holders = [];
+  const hold = (match) => {
+    const token = `\x00${holders.length}H\x00`;
+    holders.push(match);
+    return token;
+  };
+  // 保护 C++ 模板参数，避免误高亮其中的 class / Type
+  out = out.replace(/&lt;class\s+Type\s*&gt;/g, (m) => hold(m));
+  // 先高亮关键字，再包注释——顺序不能反，否则 class="code-cmt" 会被二次匹配
   out = out.replace(CODE_KW_RE, '<span class="code-kw">$1</span>');
+  out = out.replace(/(\/\/[^\n]*)/g, '<span class="code-cmt">$1</span>');
   out = out.replace(/\b(\d+)\b/g, '<span class="code-num">$1</span>');
+  holders.forEach((val, i) => {
+    out = out.replace(`\x00${i}H\x00`, val);
+  });
   return out;
 }
 
