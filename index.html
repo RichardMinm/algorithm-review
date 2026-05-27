@@ -3515,9 +3515,9 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 2,
       "title": "2. 最大子段和动态规划",
-      "prompt": "2.最大子段和: 动态规划算法\nint MaxSum(int n, int a[]){\n    int sum=0, b=0; //sum存储当前最大的b[j], b存储b[j]\n    for(int j=1; j<=n; j++) {\n        if (b>0) b+= a[j];\n        else ________________;\n        if(b>sum) ________________;\n    }\n    return sum;\n}",
-      "answer": "else b=a[j]；sum=b",
-      "analysis": "完整写法：if(b>0) b+=a[j]; else b=a[j]; if(b>sum) sum=b。b 表示以 a[j] 结尾的最大子段和。"
+      "prompt": "2.最大子段和: 动态规划算法\nint MaxSum(int n, int a[]){\n    int sum=0, b=0; //sum 为全局最大子段和，b 为以 a[j] 结尾的最大子段和\n    for(int j=1; j<=n; j++) {\n        if (b>0) b+= a[j];\n        else ________________;\n        if(b>sum) ________________;\n    }\n    return sum;\n}",
+      "answer": "b=a[j]；sum=b",
+      "analysis": "完整写法：if(b>0) b+=a[j]; else b=a[j]; if(b>sum) sum=b。注意：第一空在 else 后，只填 b=a[j]，不要重复写 else。"
     },
     {
       "id": "code-03",
@@ -3535,9 +3535,9 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 4,
       "title": "4. 排列问题",
-      "prompt": "4.排列问题\nTemplate <class Type>\nvoid perm(Type list[], int k, int m ){ //产生[list[k:m]的所有排列\n  if (________________) { //只剩下一个元素\n    for (int i=0;i<=m;i++) cout<<list[i];\n    cout<<endl;\n  }\n  else //还有多个元素待排列，递归产生排列\n    for (________________){\n      swap(list[k], list[i]);\n      perm(list, k+1, m);\n      swap(list[k], list[i]);\n    }\n}",
-      "answer": "if(k==m)；for(int i=k,i<=m,i++)",
-      "analysis": "if(k==m) 输出排列；else for(i=k;i<=m;i++) { swap; perm(k+1); swap back; }"
+      "prompt": "4.排列问题\ntemplate <class Type>\nvoid perm(Type list[], int k, int m){ //产生 list[k:m] 的所有排列\n  if (________________) { //只剩下一个元素\n    for (int i=0;i<=m;i++) cout<<list[i];\n    cout<<endl;\n  }\n  else //还有多个元素待排列，递归产生排列\n    for (________________){\n      swap(list[k], list[i]);\n      perm(list, k+1, m);\n      swap(list[k], list[i]);\n    }\n}",
+      "answer": "k==m；int i=k;i<=m;i++",
+      "analysis": "if(k==m) 时输出排列；else 中 for(int i=k;i<=m;i++) { swap; perm(k+1); swap 还原; }。两空分别只填条件与 for 括号内内容。"
     },
     {
       "id": "code-05",
@@ -3555,9 +3555,9 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 6,
       "title": "6. 合并排序",
-      "prompt": "6、合并排序描述如下：\ntemplate<class Type>\nvoid Mergesort(Type a[ ], int left, int right){\n  if (________________){\n    int i=(________________)/2;\n    Mergesort(a, left, i );\n    Mergesort(________________);\n    Merge(a,b, left,i,right);//合并到数组b\n    Copy(a,b, left,right ); //复制到数组a\n  }\n}",
-      "answer": "left < right；left + right；a, i+1, right",
-      "analysis": "分成左右两半递归排序，再 Merge 合并，复杂度 O(nlogn)。"
+      "prompt": "6、合并排序描述如下：\ntemplate<class Type>\nvoid Mergesort(Type a[], Type b[], int left, int right){\n  if (________________){\n    int i=(________________)/2;\n    Mergesort(a, b, left, i);\n    Mergesort(________________);\n    Merge(a, b, left, i, right); //合并到数组 b\n    Copy(a, b, left, right); //复制到数组 a\n  }\n}",
+      "answer": "left < right；left + right；a, b, i+1, right",
+      "analysis": "left<right 时二分：中点 i=(left+right)/2，左右递归后 Merge 到 b 再 Copy 回 a。第三空填 Mergesort 的参数列表。"
     },
     {
       "id": "code-07",
@@ -3565,9 +3565,9 @@ window.QUESTION_BANK = {
       "section": "算法填空",
       "number": 7,
       "title": "7. 计算 x^m",
-      "prompt": "7、以下是计算xm的值的过程\nint power ( x, m ){//计算xm的值并返回。\n   y=________________; i=m;\n   while(i-->0)\n     y=y*x;\n   ________________;\n}",
+      "prompt": "7、以下是计算 x 的 m 次幂的过程\nint power(int x, int m){ //计算 x^m 的值并返回\n   int y=________________;\n   int i=m;\n   while(i-->0)\n     y=y*x;\n   ________________;\n}",
       "answer": "1；return y",
-      "analysis": "循环 m 次乘 x，时间复杂度 O(m)。若用快速幂可降为 O(log m)。"
+      "analysis": "y 初值为 1，循环 m 次乘 x，最后 return y。时间复杂度 O(m)。"
     },
     {
       "id": "code-08",
@@ -3577,7 +3577,7 @@ window.QUESTION_BANK = {
       "title": "8. 冒泡排序",
       "prompt": "8.冒泡排序补全下列程序\nvoid BubbleSort(int a[], int n) {\n  for (int i = 0; i < n - 1; i++) {\n    for (int j = 0; j < n - 1 - i; j++) {\n      if (a[j] > a[j+1]) {\n        int temp = a[j];\n        ________________;\n        ________________;\n      }\n    }\n  }\n}",
       "answer": "a[j] = a[j+1]；a[j+1] = temp",
-      "analysis": "交换相邻逆序元素：先赋值后移，再把 temp 赋给 a[j+1]。"
+      "analysis": "交换相邻逆序元素：先 a[j]=a[j+1]，再 a[j+1]=temp。"
     },
     {
       "id": "qa-01",
